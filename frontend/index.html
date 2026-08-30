@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Synapse - Collaborative Real-Time Editor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="theme-light">
+  <div id="app">
+    <!-- ==================== LOBBY / DOCUMENT DASHBOARD ==================== -->
+    <section id="lobby-view" class="view-screen active">
+      <div class="lobby-container">
+        <!-- Hero Header -->
+        <header class="lobby-header">
+          <div class="brand-badge">
+            <svg class="brand-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 20h9"></path>
+              <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+            </svg>
+            <span>Real-Time Engine</span>
+          </div>
+          <h1 class="hero-title">Synapse Docs</h1>
+          <p class="hero-subtitle">
+            Zero-conflict real-time collaborative text editor with AVL Ropes, Operational Transformation, Rich Text formatting, and document management.
+          </p>
+        </header>
+
+        <!-- User Profile Config Card -->
+        <div class="profile-card card">
+          <div class="card-header">
+            <h3>Your Identity</h3>
+            <span class="card-hint">Visible to collaborators in real time</span>
+          </div>
+          <div class="profile-controls">
+            <div class="input-group">
+              <label for="user-name-input">Display Name</label>
+              <div class="input-with-icon">
+                <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+                <input type="text" id="user-name-input" placeholder="e.g. Ada Lovelace" maxlength="24">
+              </div>
+            </div>
+            <div class="color-picker-group">
+              <label>Cursor Color</label>
+              <div class="color-swatches" id="color-swatches">
+                <!-- Dynamically injected swatches -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Document Management Actions -->
+        <div class="lobby-grid">
+          <!-- Create Document Card -->
+          <div class="action-card card">
+            <div class="action-icon new-doc-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+            </div>
+            <h3>Create New Document</h3>
+            <p>Start a new document with rich text support and automatic cloud persistence.</p>
+            <div class="input-group">
+              <input type="text" id="new-doc-title" placeholder="Document Title (e.g. Project Architecture)">
+            </div>
+            <button id="btn-create-doc" class="btn btn-primary btn-block">
+              <span>Create Document</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Join Document Card -->
+          <div class="action-card card">
+            <div class="action-icon join-doc-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+                <polyline points="10 17 15 12 10 7"></polyline>
+                <line x1="15" y1="12" x2="3" y2="12"></line>
+              </svg>
+            </div>
+            <h3>Join by Document ID</h3>
+            <p>Enter an existing Document ID to collaborate with peers in real time.</p>
+            <div class="input-group">
+              <input type="text" id="join-doc-id" placeholder="e.g. welcome or doc-a1b2c3d4">
+            </div>
+            <button id="btn-join-doc" class="btn btn-secondary btn-block">
+              <span>Open Document</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Import Document Section -->
+        <div class="lobby-section">
+          <h3 class="lobby-section-title">Import from Computer</h3>
+          <p class="lobby-section-desc">Open an existing .docx file and edit it collaboratively.</p>
+          <div class="import-drop-zone" id="import-drop-zone">
+            <svg class="import-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="17 8 12 3 7 8"></polyline>
+              <line x1="12" y1="3" x2="12" y2="15"></line>
+            </svg>
+            <span>Drop a .docx file here or</span>
+            <label class="btn btn-primary" for="import-file-input">Browse</label>
+            <input type="file" id="import-file-input" accept=".docx,.docx" style="display:none" />
+          </div>
+          <div id="import-progress" style="display:none">
+            <span class="spinner"></span> Importing...
+          </div>
+        </div>
+
+        <!-- Document List / Library Section -->
+        <div class="recent-docs-section">
+          <div class="section-title-row">
+            <div class="title-with-badge">
+              <h2>Your Documents</h2>
+              <span class="doc-count-badge" id="doc-count-badge">0</span>
+            </div>
+            <div class="section-controls">
+              <div class="search-input-wrapper">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <input type="text" id="search-docs-input" placeholder="Search documents...">
+              </div>
+              <button id="btn-refresh-docs" class="btn-icon" title="Refresh document list">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="23 4 23 10 17 10"></polyline>
+                  <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div class="docs-grid" id="documents-grid">
+            <!-- Dynamically populated document cards -->
+          </div>
+        </div>
+
+        <!-- Footer Info -->
+        <footer class="lobby-footer">
+          <span>AVL Rope Text Model</span>
+          <span class="dot-separator">•</span>
+          <span>TP1 Operational Transformation</span>
+          <span class="dot-separator">•</span>
+          <span>Rich Text Intervals</span>
+          <span class="dot-separator">•</span>
+          <span>REST &amp; WebSocket Sync</span>
+        </footer>
+      </div>
+    </section>
+
+    <!-- ==================== EDITOR VIEW ==================== -->
+    <section id="editor-view" class="view-screen">
+      <!-- Top Navigation Bar -->
+      <nav class="editor-nav">
+        <div class="nav-left">
+          <button id="btn-back-lobby" class="btn-nav" title="Back to Document Library">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+            <span>Library</span>
+          </button>
+          <div class="doc-title-container">
+            <input type="text" id="doc-title-input" class="doc-title-input" value="Untitled Document" title="Click to rename document">
+            <span class="doc-id-pill" id="doc-id-badge" title="Click to copy Document ID">welcome</span>
+          </div>
+        </div>
+
+        <div class="nav-right">
+          <!-- Active Users Avatars -->
+          <div class="active-users-bar" id="active-users-list">
+            <!-- Dynamically populated active users -->
+          </div>
+
+          <!-- Connection Status -->
+          <div class="connection-badge connected" id="connection-status" title="Real-time WebSocket Status">
+            <span class="status-indicator"></span>
+            <span class="status-text">Connected</span>
+            <span class="ping-text" id="ping-indicator">~12ms</span>
+          </div>
+
+          <!-- Share Button -->
+          <button id="btn-share-doc" class="btn btn-sm btn-primary" title="Copy shareable link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="18" cy="5" r="3"></circle>
+              <circle cx="6" cy="12" r="3"></circle>
+              <circle cx="18" cy="19" r="3"></circle>
+              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+              <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+            </svg>
+            <span>Share</span>
+          </button>
+
+          <!-- Theme Toggle -->
+          <button id="btn-toggle-theme" class="btn-icon" title="Toggle Dark/Light Mode">
+            <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="5"></circle>
+              <line x1="12" y1="1" x2="12" y2="3"></line>
+              <line x1="12" y1="21" x2="12" y2="23"></line>
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+              <line x1="1" y1="12" x2="3" y2="12"></line>
+              <line x1="21" y1="12" x2="23" y2="12"></line>
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+            <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+          </button>
+        </div>
+      </nav>
+
+      <!-- Editor Toolbar with Rich Text Formatting Controls -->
+      <div class="editor-toolbar">
+        <!-- Undo / Redo Group -->
+        <div class="toolbar-group">
+          <button id="btn-undo" class="toolbar-btn" title="Undo (Ctrl+Z)" disabled>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 7v6h6"></path>
+              <path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"></path>
+            </svg>
+          </button>
+          <button id="btn-redo" class="toolbar-btn" title="Redo (Ctrl+Y)" disabled>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 7v6h-6"></path>
+              <path d="M3 17a9 9 0 0 1 9-9 9 9 0 0 1 6 2.3l3 2.7"></path>
+            </svg>
+          </button>
+        </div>
+
+        <div class="toolbar-divider"></div>
+
+        <!-- Typography / Font Group -->
+        <div class="toolbar-group">
+          <select id="font-family-select" class="toolbar-select" title="Font Family">
+            <option value="Inter, sans-serif">Sans (Inter)</option>
+            <option value="'Lora', serif">Serif (Lora)</option>
+            <option value="'Fira Code', monospace">Monospace (Fira)</option>
+          </select>
+
+          <select id="font-size-select" class="toolbar-select" title="Font Size">
+            <option value="14px">14 px</option>
+            <option value="16px" selected>16 px</option>
+            <option value="18px">18 px</option>
+            <option value="20px">20 px</option>
+          </select>
+        </div>
+
+        <div class="toolbar-divider"></div>
+
+        <!-- Rich Text Formatting Controls -->
+        <div class="toolbar-group rich-format-group">
+          <button id="btn-format-bold" class="toolbar-btn format-btn" data-format="bold" title="Bold (Ctrl+B)">
+            <strong>B</strong>
+          </button>
+          <button id="btn-format-italic" class="toolbar-btn format-btn" data-format="italic" title="Italic (Ctrl+I)">
+            <em>I</em>
+          </button>
+          <button id="btn-format-underline" class="toolbar-btn format-btn" data-format="underline" title="Underline (Ctrl+U)">
+            <u>U</u>
+          </button>
+
+          <div class="toolbar-divider-sm"></div>
+
+          <button id="btn-format-h1" class="toolbar-btn format-btn" data-header="1" title="Heading 1">
+            <strong>H1</strong>
+          </button>
+          <button id="btn-format-h2" class="toolbar-btn format-btn" data-header="2" title="Heading 2">
+            <strong>H2</strong>
+          </button>
+          <button id="btn-format-h3" class="toolbar-btn format-btn" data-header="3" title="Heading 3">
+            <strong>H3</strong>
+          </button>
+
+          <div class="toolbar-divider-sm"></div>
+
+          <button id="btn-format-quote" class="toolbar-btn format-btn" data-format="blockquote" title="Quote">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 21c3 0 7-1 7-8V5c0-1.25-.75-2-2-2H4c-1.25 0-2 .75-2 2v6c0 7 1 8 3 10z"></path>
+              <path d="M15 21c3 0 7-1 7-8V5c0-1.25-.75-2-2-2h-4c-1.25 0-2 .75-2 2v6c0 7 1 8 3 10z"></path>
+            </svg>
+          </button>
+          <button id="btn-format-code" class="toolbar-btn format-btn" data-format="code" title="Inline Code">
+            <code>&lt;/&gt;</code>
+          </button>
+          <button id="btn-format-clear" class="toolbar-btn format-btn" data-format="clear" title="Clear Formatting">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 7V4h16v3"></path>
+              <path d="M9 20h6"></path>
+              <path d="M12 4v16"></path>
+              <line x1="18" y1="14" x2="22" y2="18"></line>
+              <line x1="22" y1="14" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+
+        <label class="toolbar-btn" id="btn-insert-image" title="Insert Image" style="cursor:pointer">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+            <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
+            <polyline points="21 15 16 10 5 21"/>
+          </svg>
+          <input type="file" id="image-file-input" accept="image/png,image/jpeg,image/gif,image/webp" style="display:none">
+        </label>
+
+        <div class="toolbar-divider"></div>
+
+        <!-- History & Export -->
+        <div class="toolbar-group">
+          <button id="btn-version-history" class="toolbar-btn text-btn" title="View Version History">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 14 14"></polyline>
+            </svg>
+            <span>History</span>
+          </button>
+
+          <!-- Export Dropdown -->
+          <div class="dropdown-wrapper">
+            <button id="btn-export-menu" class="toolbar-btn text-btn" title="Export Document">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              <span>Export</span>
+            </button>
+            <div class="dropdown-menu" id="export-dropdown">
+              <button class="dropdown-item" data-export="md">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                <span>Markdown (.md)</span>
+              </button>
+              <button class="dropdown-item" data-export="txt">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+                <span>Plain Text (.txt)</span>
+              </button>
+              <button class="dropdown-item" data-export="json">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+                <span>Document JSON (.json)</span>
+              </button>
+              <button class="dropdown-item" data-export="docx">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+                <span>Word Document (.docx)</span>
+              </button>
+              <button class="dropdown-item" data-export="pdf">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+                <span>Export as PDF</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="toolbar-spacer"></div>
+
+        <!-- Cloud Sync Indicator -->
+        <div class="sync-status-msg" id="sync-status-text">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+          <span>All changes saved</span>
+        </div>
+      </div>
+
+      <!-- Main Editor Container with Rich Text Surface -->
+      <main class="editor-main">
+        <div class="paper-container">
+          <!-- Line Numbers Gutter -->
+          <div class="gutter" id="editor-gutter">
+            <div class="line-number">1</div>
+          </div>
+
+          <!-- Interactive Rich Text Editing Area -->
+          <div class="editor-surface-wrapper">
+            <!-- Remote Selection & Cursor Overlays -->
+            <div id="remote-overlay" class="remote-overlay-layer"></div>
+
+            <!-- Formatted Textarea / Rich Text Surface -->
+            <div id="formatted-backdrop" class="formatted-backdrop"></div>
+            <textarea
+              id="editor-textarea"
+              class="editor-textarea"
+              spellcheck="false"
+              placeholder="Start typing your document... Select text and use toolbar buttons (or Ctrl+B, Ctrl+I, Ctrl+U) for real-time rich formatting."
+              autofocus
+            ></textarea>
+          </div>
+        </div>
+      </main>
+
+      <!-- Bottom Status Bar -->
+      <footer class="editor-statusbar">
+        <div class="statusbar-left">
+          <span class="status-item" id="stat-version">Version: <strong>0</strong></span>
+          <span class="status-separator">|</span>
+          <span class="status-item" id="stat-users">Active Users: <strong>1</strong></span>
+          <span class="status-separator">|</span>
+          <span class="status-item" id="stat-save-status">Saved</span>
+        </div>
+        <div class="statusbar-right">
+          <span class="status-item" id="stat-cursor">Ln 1, Col 1</span>
+          <span class="status-separator">|</span>
+          <span class="status-item" id="stat-words">0 words</span>
+          <span class="status-separator">|</span>
+          <span class="status-item" id="stat-chars">0 characters</span>
+        </div>
+      </footer>
+
+      <!-- Version History Drawer -->
+      <aside id="history-drawer" class="history-drawer">
+        <div class="drawer-header">
+          <div class="drawer-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 14 14"></polyline>
+            </svg>
+            <h3>Version History</h3>
+          </div>
+          <button id="btn-close-history" class="btn-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+
+        <div class="drawer-content">
+          <div class="history-preview-banner" id="history-preview-banner" style="display: none;">
+            <span>Previewing Version <strong id="preview-version-num">0</strong></span>
+            <button id="btn-restore-version" class="btn btn-sm btn-primary">Restore this version</button>
+          </div>
+
+          <div class="history-timeline" id="history-timeline-list">
+            <!-- Dynamically populated version cards -->
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <!-- Document Rename Modal -->
+    <div id="rename-modal" class="modal-overlay">
+      <div class="modal-card card">
+        <div class="modal-header">
+          <h3>Rename Document</h3>
+          <button class="btn-icon modal-close-btn" data-modal="rename-modal">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="rename-doc-id">
+          <div class="input-group">
+            <label for="rename-doc-title">Document Title</label>
+            <input type="text" id="rename-doc-title" placeholder="New document title">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary modal-close-btn" data-modal="rename-modal">Cancel</button>
+          <button id="btn-confirm-rename" class="btn btn-primary">Save Changes</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Document Delete Modal -->
+    <div id="delete-modal" class="modal-overlay">
+      <div class="modal-card card">
+        <div class="modal-header">
+          <h3 style="color: var(--accent-danger);">Delete Document</h3>
+          <button class="btn-icon modal-close-btn" data-modal="delete-modal">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="delete-doc-id">
+          <p>Are you sure you want to delete <strong id="delete-doc-name">this document</strong>? This action cannot be undone.</p>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary modal-close-btn" data-modal="delete-modal">Cancel</button>
+          <button id="btn-confirm-delete" class="btn btn-danger">Delete Permanently</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="toast-container"></div>
+  </div>
+
+  <!-- JavaScript Modules -->
+  <script src="js/ws_client.js"></script>
+  <script src="js/ot_client.js"></script>
+  <script src="js/cursor_manager.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

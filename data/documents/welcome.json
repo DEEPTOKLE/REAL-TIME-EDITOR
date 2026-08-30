@@ -1,0 +1,17 @@
+{
+  "docId": "welcome",
+  "title": "Welcome Guide",
+  "content": "Welcome to the Collaborative Real-Time Text Editor!\n\nMultiple users can edit this document at the same time.\nFeatures:\n\u2022 Balanced AVL Rope data structure for high performance\n\u2022 Operational Transformation (OT) for conflict-free real-time sync\n\u2022 Live multi-user cursors and selection presence\n\u2022 Full version history and snapshot time-travel\n\u2022 Local Undo/Redo support\n",
+  "version": 0,
+  "createdAt": 1788089716.0773673,
+  "updatedAt": 1788089716.0773673,
+  "history": [],
+  "historyMetadata": [],
+  "snapshots": {
+    "0": "Welcome to the Collaborative Real-Time Text Editor!\n\nMultiple users can edit this document at the same time.\nFeatures:\n\u2022 Balanced AVL Rope data structure for high performance\n\u2022 Operational Transformation (OT) for conflict-free real-time sync\n\u2022 Live multi-user cursors and selection presence\n\u2022 Full version history and snapshot time-travel\n\u2022 Local Undo/Redo support\n"
+  },
+  "snapshotsFormatting": {
+    "0": []
+  },
+  "formatting": []
+}

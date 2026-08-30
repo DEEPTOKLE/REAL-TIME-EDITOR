@@ -1,0 +1,263 @@
+{
+  "docId": "doc-c231cd7d",
+  "title": "MCA Python Lab Manual",
+  "content": "\n\n\n\n\n\n\n\n\n\n\nProgramming with Python & Problem Solving (05MC0107)\nLab Manual (2026-27)\nProgram:  M.C.A.\nSemester: 1\nName of the Student:\nEnrolment No.:\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nINDEX\n\n\n\nPractical No. 1\nWrite a program to demonstrate basic input and output operations in Python.\n\nAim/ Objective: \nSource Code:\n\n\n\nOutput:\n\n\nConclusion: \n\n",
+  "version": 0,
+  "createdAt": 1788089758.220833,
+  "updatedAt": 1788089758.220833,
+  "history": [],
+  "historyMetadata": [],
+  "snapshots": {
+    "0": "\n\n\n\n\n\n\n\n\n\n\nProgramming with Python & Problem Solving (05MC0107)\nLab Manual (2026-27)\nProgram:  M.C.A.\nSemester: 1\nName of the Student:\nEnrolment No.:\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nINDEX\n\n\n\nPractical No. 1\nWrite a program to demonstrate basic input and output operations in Python.\n\nAim/ Objective: \nSource Code:\n\n\n\nOutput:\n\n\nConclusion: \n\n"
+  },
+  "snapshotsFormatting": {
+    "0": []
+  },
+  "formatting": [
+    [
+      11,
+      52,
+      {
+        "bold": true
+      }
+    ],
+    [
+      52,
+      53,
+      {
+        "bold": true
+      }
+    ],
+    [
+      53,
+      54,
+      {
+        "bold": true
+      }
+    ],
+    [
+      54,
+      62,
+      {
+        "bold": true
+      }
+    ],
+    [
+      62,
+      63,
+      {
+        "bold": true
+      }
+    ],
+    [
+      64,
+      79,
+      {
+        "bold": true
+      }
+    ],
+    [
+      79,
+      80,
+      {
+        "bold": true
+      }
+    ],
+    [
+      80,
+      82,
+      {
+        "bold": true
+      }
+    ],
+    [
+      82,
+      83,
+      {
+        "bold": true
+      }
+    ],
+    [
+      83,
+      84,
+      {
+        "bold": true
+      }
+    ],
+    [
+      85,
+      92,
+      {
+        "bold": true
+      }
+    ],
+    [
+      92,
+      93,
+      {
+        "bold": true
+      }
+    ],
+    [
+      93,
+      95,
+      {
+        "bold": true
+      }
+    ],
+    [
+      95,
+      97,
+      {
+        "bold": true
+      }
+    ],
+    [
+      97,
+      98,
+      {
+        "bold": true
+      }
+    ],
+    [
+      98,
+      99,
+      {
+        "bold": true
+      }
+    ],
+    [
+      99,
+      101,
+      {
+        "bold": true
+      }
+    ],
+    [
+      102,
+      112,
+      {
+        "bold": true
+      }
+    ],
+    [
+      112,
+      113,
+      {
+        "bold": true
+      }
+    ],
+    [
+      114,
+      134,
+      {
+        "bold": true
+      }
+    ],
+    [
+      135,
+      136,
+      {
+        "bold": true
+      }
+    ],
+    [
+      136,
+      148,
+      {
+        "bold": true
+      }
+    ],
+    [
+      148,
+      149,
+      {
+        "bold": true
+      }
+    ],
+    [
+      176,
+      191,
+      {
+        "bold": true
+      }
+    ],
+    [
+      192,
+      238,
+      {
+        "bold": true
+      }
+    ],
+    [
+      238,
+      239,
+      {
+        "bold": true
+      }
+    ],
+    [
+      239,
+      267,
+      {
+        "bold": true
+      }
+    ],
+    [
+      269,
+      272,
+      {
+        "bold": true
+      }
+    ],
+    [
+      272,
+      283,
+      {
+        "bold": true
+      }
+    ],
+    [
+      283,
+      284,
+      {
+        "bold": true
+      }
+    ],
+    [
+      286,
+      297,
+      {
+        "bold": true
+      }
+    ],
+    [
+      297,
+      298,
+      {
+        "bold": true
+      }
+    ],
+    [
+      302,
+      309,
+      {
+        "bold": true
+      }
+    ],
+    [
+      312,
+      323,
+      {
+        "bold": true
+      }
+    ],
+    [
+      323,
+      324,
+      {
+        "bold": true
+      }
+    ]
+  ]
+}
