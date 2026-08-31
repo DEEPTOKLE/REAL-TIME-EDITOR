@@ -1037,12 +1037,13 @@ body.theme-dark .btn-primary {
   position: relative;
   flex-grow: 1;
   display: flex;
+  min-height: 798px;
   padding: 24px 32px;
 }
 
 .editor-textarea {
   width: 100%;
-  height: 100%;
+  height: 750px;
   min-height: 750px;
   border: none;
   outline: none;
@@ -1056,6 +1057,7 @@ body.theme-dark .btn-primary {
   tab-size: 2;
   white-space: pre-wrap;
   word-wrap: break-word;
+  overflow: hidden;
   z-index: 2;
 }
 
@@ -1089,7 +1091,7 @@ body.theme-dark .btn-primary {
   right: 32px;
   bottom: 24px;
   pointer-events: none;
-  z-index: 3;
+  z-index: 4;
 }
 
 .remote-cursor {
@@ -1437,11 +1439,13 @@ body.theme-dark .btn-primary {
    Editor Images
    ========================================================================== */
 
-.format-chunk img.editor-image {
-  display: block;
-  max-width: 100%;
+.formatted-backdrop img.editor-image {
+  /* An image replaces its U+FFFC text anchor, so it must stay inline to
+     preserve the exact position it had in the imported document. */
+  display: inline-block;
+  vertical-align: middle;
   border-radius: 4px;
-  margin: 4px 0;
+  margin: 2px 4px;
   pointer-events: none;
   user-select: none;
 }
@@ -1462,8 +1466,15 @@ body.theme-dark .btn-primary {
   position: absolute;
   box-sizing: border-box;
   border: 2px solid #1a73e8;
+  border-radius: 2px;
   pointer-events: none;
   z-index: 900;
+  transition: border-color 0.1s;
+}
+
+#image-resize-overlay.dragging {
+  border-color: #1558b0;
+  border-style: dashed;
 }
 
 .resize-handle {
@@ -1471,10 +1482,17 @@ body.theme-dark .btn-primary {
   width: 10px;
   height: 10px;
   background: #1a73e8;
-  border: 1px solid #fff;
+  border: 2px solid #fff;
   border-radius: 2px;
   pointer-events: all;
   z-index: 901;
+  box-sizing: border-box;
+  transition: background 0.1s, transform 0.1s;
+}
+
+.resize-handle:hover {
+  background: #1558b0;
+  transform: scale(1.2);
 }
 
 .resize-handle-tl { top: -5px;  left:  -5px; cursor: nw-resize; }
@@ -1482,7 +1500,29 @@ body.theme-dark .btn-primary {
 .resize-handle-bl { bottom: -5px; left:  -5px; cursor: sw-resize; }
 .resize-handle-br { bottom: -5px; right: -5px; cursor: se-resize; }
 
-#image-resize-overlay:hover,
-#image-resize-overlay.dragging {
+.delete-image-button {
+  position: absolute;
+  top: -14px;
+  right: -14px;
+  width: 24px;
+  height: 24px;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background: #d93025;
+  color: #fff;
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 17px;
+  font-weight: 700;
+  pointer-events: all;
+  z-index: 902;
+}
+
+#image-resize-overlay:hover {
   border-color: #1558b0;
+}
+
+/* Ensure table cells in backdrop remain clickable */
+.editor-table .table-cell {
+  pointer-events: all;
 }

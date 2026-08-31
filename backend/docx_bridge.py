@@ -13,9 +13,9 @@ from docx.shared import Pt
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.oxml.ns import qn
 
-from .image_store import save_image_file, load_image_file
+from .image_store import save_image_file, load_image_file, ALLOWED_EXTENSIONS, CONTENT_TYPE_ALIASES
 
-ALLOWED_CONTENT_TYPES = {"image/png", "image/jpeg", "image/gif", "image/webp"}
+ALLOWED_CONTENT_TYPES = set(ALLOWED_EXTENSIONS) | set(CONTENT_TYPE_ALIASES)
 
 
 def _get_run_formatting(run_elem):

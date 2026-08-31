@@ -229,6 +229,10 @@
         this.dom.lobbyView.classList.add("active");
         this.currentDocId = null;
         this.ws.disconnect();
+        this.selectedImagePos = null;
+        this.resizeDragState = null;
+        const overlay = document.getElementById("image-resize-overlay");
+        if (overlay) overlay.style.display = "none";
         this.offlineQueue = [];
         this.isOnline = true;
         this.updateOfflineBanner(false);
@@ -1032,6 +1036,7 @@
       if (!this.dom.formattedBackdrop) return;
       if (!text) {
         this.dom.formattedBackdrop.innerHTML = "";
+        this.resizeEditorToContent();
         return;
       }
 
@@ -1046,11 +1051,12 @@
         }
       }
 
-      const chars = [...text];
       let html = "";
 
-      for (let pos = 0; pos < chars.length; pos++) {
-        const char = chars[pos];
+      // Use JavaScript string indices (UTF-16 code units), the same indexing
+      // model used by textarea selections and OT formatting operations.
+      for (let pos = 0; pos < text.length; pos++) {
+        const char = text[pos];
 
         if (char === "\uFFFC") {
           const imgInterval = this.formattingIntervals.find(
@@ -1093,14 +1099,41 @@
       }
 
       this.dom.formattedBackdrop.innerHTML = html;
+      this.resizeEditorToContent();
       this.dom.formattedBackdrop.scrollTop = textarea.scrollTop;
       this.syncResizeOverlay();
     }
 
+    resizeEditorToContent() {
+      const textarea = this.dom.editorTextarea;
+      const minHeight = 750;
+      const backdrop = this.dom.formattedBackdrop;
+      const surface = textarea.closest(".editor-surface-wrapper");
+      const paper = textarea.closest(".paper-container");
+
+      // Remove the textarea's own scrollbar. Size the page from both text and
+      // rendered image content, because images in the backdrop are not counted
+      // by textarea.scrollHeight.
+      textarea.style.height = "auto";
+      const contentHeight = Math.max(
+        minHeight,
+        textarea.scrollHeight,
+        backdrop ? backdrop.scrollHeight : 0,
+      );
+      textarea.style.height = `${contentHeight}px`;
+      const pageHeight = contentHeight + 48;
+      if (surface) surface.style.height = `${pageHeight}px`;
+      if (paper) paper.style.height = `${pageHeight}px`;
+    }
+
     buildImageHtml(iv, pos) {
       const attrs = iv[2];
-      const w = Math.min(attrs.width || 400, 560);
-      return `<img class="editor-image" data-char-pos="${pos}" src="/api/images/${attrs.image}" width="${w}" alt="image" onerror="this.outerHTML='<span class=\\'image-placeholder\\'>Image unavailable</span>'">`;
+      // Width and height are captured from the source document or image resize
+      // action. Keep them at the exact text-anchor position and dimensions where
+      // the image was imported.
+      const w = Math.max(1, Number(attrs.width) || 400);
+      const h = Math.max(1, Number(attrs.height) || 300);
+      return `<img class="editor-image" data-char-pos="${pos}" src="/api/images/${attrs.image}" width="${w}" height="${h}" alt="image" onerror="this.outerHTML='<span class=\\'image-placeholder\\'>Image unavailable</span>'">`;
     }
     sendOperationToServer(op, version) {
       this.dom.statSaveStatus.textContent = "Syncing...";
@@ -1202,15 +1235,17 @@
     detectSelectedImage() {
       const textarea = this.dom.editorTextarea;
       const pos = textarea.selectionStart;
-      const char = textarea.value[pos];
+      const text = textarea.value;
 
-      if (char === "\uFFFC") {
+      if (pos < text.length && text[pos] === "\uFFFC") {
         const iv = this.formattingIntervals.find(
           ([s, e, a]) => s <= pos && e > pos && a && a.image
         );
         if (iv) {
-          this.selectedImagePos = pos;
-          this.syncResizeOverlay();
+          if (this.selectedImagePos !== pos) {
+            this.selectedImagePos = pos;
+            this.syncResizeOverlay();
+          }
           return;
         }
       }
@@ -1265,10 +1300,11 @@
       const overlay = document.getElementById("image-resize-overlay");
       if (!overlay) return;
 
-      if (this.selectedImagePos === null || this.resizeDragState) {
+      if (this.selectedImagePos === null) {
         overlay.style.display = "none";
         return;
       }
+      if (this.resizeDragState) return;
 
       const img = this.dom.formattedBackdrop
         .querySelector(`img[data-char-pos="${this.selectedImagePos}"]`);
@@ -1290,113 +1326,144 @@
     }
 
     initImageResize() {
-      const overlay = document.createElement("div");
-      overlay.id = "image-resize-overlay";
-      overlay.style.display = "none";
-      overlay.innerHTML = `
-        <div class="resize-handle resize-handle-tl" data-corner="tl"></div>
-        <div class="resize-handle resize-handle-tr" data-corner="tr"></div>
-        <div class="resize-handle resize-handle-bl" data-corner="bl"></div>
-        <div class="resize-handle resize-handle-br" data-corner="br"></div>
-      `;
-      document.body.appendChild(overlay);
+        // ── Create the overlay once ──────────────────────────────────────
+        const overlay = document.createElement("div");
+        overlay.id    = "image-resize-overlay";
+        overlay.style.display = "none";
+        overlay.innerHTML = `
+            <div class="resize-handle resize-handle-tl" data-corner="tl"></div>
+            <div class="resize-handle resize-handle-tr" data-corner="tr"></div>
+            <div class="resize-handle resize-handle-bl" data-corner="bl"></div>
+            <div class="resize-handle resize-handle-br" data-corner="br"></div>
+        `;
+        document.body.appendChild(overlay);
 
-      overlay.addEventListener("mousedown", (e) => {
-        const handle = e.target.closest(".resize-handle");
-        if (!handle) return;
-        e.preventDefault();
+        // ── mousedown on a handle — begin drag ──────────────────────────
+        overlay.addEventListener("mousedown", (e) => {
+            const handle = e.target.closest(".resize-handle");
+            if (!handle) return;
+            e.preventDefault();
+            e.stopPropagation();
 
-        const pos = this.selectedImagePos;
-        if (pos === null) return;
+            const pos = this.selectedImagePos;
+            if (pos === null) return;
 
-        const iv = this.formattingIntervals.find(
-          ([s, en, a]) => s <= pos && en > pos && a && a.image
-        );
-        if (!iv) return;
+            const iv = this.formattingIntervals.find(
+                ([s, en, a]) => s <= pos && en > pos && a && a.image
+            );
+            if (!iv) return;
 
-        const img = this.dom.formattedBackdrop
-          .querySelector(`img[data-char-pos="${pos}"]`);
-        if (!img) return;
+            const img = this.dom.formattedBackdrop
+                .querySelector(`img[data-char-pos="${pos}"]`);
+            if (!img) return;
 
-        this.resizeDragState = {
-          pos,
-          corner: handle.dataset.corner,
-          startX: e.clientX,
-          startY: e.clientY,
-          startWidth: img.getBoundingClientRect().width,
-          startHeight: img.getBoundingClientRect().height,
-          imgId: iv[2].image,
-        };
+            const rect = img.getBoundingClientRect();
 
-        overlay.style.pointerEvents = "all";
-      });
+            this.resizeDragState = {
+                pos,
+                corner:      handle.dataset.corner,
+                startX:      e.clientX,
+                startY:      e.clientY,
+                startWidth:  rect.width,
+                startHeight: rect.height,
+                imgId:       iv[2].image,
+            };
 
-      window.addEventListener("mousemove", (e) => {
-        if (!this.resizeDragState) return;
-        const d = this.resizeDragState;
-
-        const dx = e.clientX - d.startX;
-        const dy = e.clientY - d.startY;
-
-        let newW = Math.max(50, Math.min(560, d.startWidth + dx));
-        let newH = Math.max(30, d.startHeight + dy);
-
-        const ratio = d.startHeight / d.startWidth;
-        newH = Math.round(newW * ratio);
-
-        overlay.style.width = `${newW}px`;
-        overlay.style.height = `${newH}px`;
-      });
-
-      window.addEventListener("mouseup", (e) => {
-        if (!this.resizeDragState) return;
-        const d = this.resizeDragState;
-
-        const newW = parseInt(overlay.style.width, 10);
-        const newH = parseInt(overlay.style.height, 10);
-
-        this.applyFormatToLocalStore(d.pos, d.pos + 1, {
-          image: d.imgId,
-          width: newW,
-          height: newH,
+            overlay.classList.add("dragging");
+            // Expand overlay to cover page — absorbs all mouse events
+            overlay.style.pointerEvents = "all";
         });
 
-        const prevAttrs = { image: d.imgId, width: d.startWidth, height: d.startHeight };
-        const formatOp = OTClient.createFormat(
-          d.pos, d.pos + 1,
-          { image: d.imgId, width: newW, height: newH },
-          this.userId, null, prevAttrs
-        );
-        this.ot.applyLocalOperation(formatOp);
+        // ── mousemove — live resize preview ─────────────────────────────
+        window.addEventListener("mousemove", (e) => {
+            if (!this.resizeDragState) return;
+            const d = this.resizeDragState;
 
-        this.resizeDragState = null;
-        overlay.style.pointerEvents = "none";
+            const dx  = e.clientX - d.startX;
+            const newW = Math.max(50, Math.min(560, d.startWidth + dx));
 
-        this.renderFormattedBackdrop();
-        this.showToast(`Image resized to ${newW}×${newH}px`);
-      });
+            // Maintain original aspect ratio
+            const ratio = d.startHeight / Math.max(d.startWidth, 1);
+            const newH  = Math.round(newW * ratio);
 
-      document.addEventListener("mousedown", (e) => {
-        if (
-          this.resizeDragState ||
-          e.target.closest("#image-resize-overlay") ||
-          e.target === this.dom.editorTextarea
-        ) return;
-        this.selectedImagePos = null;
-        overlay.style.display = "none";
-      });
+            overlay.style.width  = `${newW}px`;
+            overlay.style.height = `${newH}px`;
+        });
 
-      this.dom.editorTextarea.addEventListener("scroll", () => {
-        this.syncResizeOverlay();
-      });
+        // ── mouseup — commit resize ──────────────────────────────────────
+        window.addEventListener("mouseup", (e) => {
+            if (!this.resizeDragState) return;
+            const d = this.resizeDragState;
 
-      // Click an image in the backdrop to select it (shows the resize handles).
-      this.dom.formattedBackdrop.addEventListener("click", (e) => {
-        const img = e.target.closest(".editor-image");
-        if (!img) return;
-        const pos = parseInt(img.dataset.charPos, 10);
-        if (!Number.isNaN(pos)) this.selectImageAt(pos);
-      });
+            const newW = parseInt(overlay.style.width,  10);
+            const newH = parseInt(overlay.style.height, 10);
+
+            // Guard against degenerate values
+            if (!newW || !newH || newW < 10 || newH < 10) {
+                this.resizeDragState = null;
+                overlay.classList.remove("dragging");
+                overlay.style.pointerEvents = "none";
+                return;
+            }
+
+            // 1. Clear drag state first so renderFormattedBackdrop() repositions
+            //    the overlay over the freshly sized image.
+            this.resizeDragState = null;
+            overlay.classList.remove("dragging");
+            overlay.style.pointerEvents = "none";
+
+            // 2. Update local interval immediately so the backdrop re-renders
+            //    with the new size before the server round-trip completes.
+            this.applyFormatToLocalStore(d.pos, d.pos + 1, {
+                image:  d.imgId,
+                width:  newW,
+                height: newH,
+            });
+
+            // 3. Send FormatOp through the OT pipeline — syncs to server + peers.
+            const prevAttrs = {
+                image:  d.imgId,
+                width:  d.startWidth,
+                height: d.startHeight,
+            };
+            const formatOp = OTClient.createFormat(
+                d.pos, d.pos + 1,
+                { image: d.imgId, width: newW, height: newH },
+                this.userId,
+                null,
+                prevAttrs
+            );
+            this.ot.applyLocalOperation(formatOp);
+
+            // 4. Re-render backdrop (this calls syncResizeOverlay() internally).
+            this.renderFormattedBackdrop();
+            this.showToast(`Image resized to ${newW}×${newH}px`);
+        });
+
+        // ── Hide handles when clicking outside the editor area ───────────
+        document.addEventListener("mousedown", (e) => {
+            if (this.resizeDragState) return;
+            if (e.target.closest("#image-resize-overlay")) return;
+            if (e.target === this.dom.editorTextarea) return;
+            if (this.selectedImagePos !== null) {
+                this.selectedImagePos = null;
+                overlay.style.display = "none";
+            }
+        });
+
+        // ── Reposition on scroll ─────────────────────────────────────────
+        this.dom.editorTextarea.addEventListener("scroll", () => {
+            this.syncResizeOverlay();
+        });
+
+        window.addEventListener("scroll", () => {
+            this.syncResizeOverlay();
+        });
+
+        // ── Reposition on window resize ──────────────────────────────────
+        window.addEventListener("resize", () => {
+            this.syncResizeOverlay();
+        });
     }
 
     broadcastCursor() {

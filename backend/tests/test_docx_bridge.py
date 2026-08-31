@@ -13,6 +13,7 @@ import aiohttp
 from aiohttp import web
 from docx import Document
 from docx.shared import Pt
+from PIL import Image
 
 from backend.docx_bridge import docx_to_synapse, synapse_to_docx
 from backend.server import CollaborativeServer
@@ -174,6 +175,29 @@ class TestDocxBridge(unittest.TestCase):
         from backend.image_store import save_image_file
         with self.assertRaises(ValueError):
             save_image_file(b"x" * (10 * 1024 * 1024 + 1), "image/png")
+
+    def test_bmp_is_converted_to_browser_safe_png(self):
+        from backend.image_store import save_image_file, load_image_file
+
+        source = io.BytesIO()
+        Image.new("RGB", (4, 4), "red").save(source, format="BMP")
+        img_id = save_image_file(source.getvalue(), "image/bmp")
+        output, content_type = load_image_file(img_id)
+
+        self.assertEqual(content_type, "image/png")
+        self.assertTrue(output.startswith(b"\x89PNG"))
+
+    def test_bmp_embedded_in_docx_is_preserved(self):
+        source = io.BytesIO()
+        Image.new("RGB", (4, 4), "blue").save(source, format="BMP")
+        doc = Document()
+        doc.add_paragraph().add_run().add_picture(io.BytesIO(source.getvalue()))
+        docx_file = io.BytesIO()
+        doc.save(docx_file)
+
+        text, intervals = docx_to_synapse(docx_file.getvalue())
+        self.assertIn("\uFFFC", text)
+        self.assertTrue(any(iv[2].get("image") for iv in intervals))
 
 
 

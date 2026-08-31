@@ -44,6 +44,21 @@ class TestDocumentCRUD(unittest.TestCase):
         self.assertNotIn(doc.doc_id, self.mgr.documents)
         self.assertFalse(os.path.exists(path))
 
+    def test_rejects_path_traversal_document_id(self):
+        with self.assertRaises(ValueError):
+            self.mgr.create_document(doc_id="../../outside")
+
+    def test_delete_missing_document_raises_key_error(self):
+        with self.assertRaises(KeyError):
+            self.mgr.delete_document("does-not-exist")
+
+    def test_rejects_invalid_snapshot_version(self):
+        doc = self.mgr.create_document(doc_id="snapshot-check")
+        with self.assertRaises(ValueError):
+            doc.get_snapshot_at_version(1)
+        with self.assertRaises(ValueError):
+            doc.get_snapshot_formatting_at_version(-1)
+
     def test_persistence_round_trip(self):
         doc = self.mgr.create_document(title="Persist Me")
         doc.apply_client_operation(InsertOp(0, "Hello world", user_id="u"), client_base_version=0)

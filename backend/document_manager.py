@@ -7,12 +7,33 @@ active user presence/cursors, and optional disk persistence.
 
 import json
 import os
+import re
 import time
 import uuid
 from typing import Dict, List, Optional, Any, Tuple
 from .rope import Rope
 from .ot import Operation, InsertOp, DeleteOp, NoOp, FormatOp, transform
 from .formatting import FormattingStore
+
+
+DOCUMENT_ID_PATTERN = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$")
+
+
+def validate_document_id(doc_id: str) -> str:
+    """Return a safe document ID or raise ValueError.
+
+    Document IDs are used in persistence filenames, so they must never contain
+    path separators, traversal components, or other filesystem-special text.
+    """
+    if not isinstance(doc_id, str):
+        raise ValueError("Document ID must be a string")
+    doc_id = doc_id.strip()
+    if not DOCUMENT_ID_PATTERN.fullmatch(doc_id):
+        raise ValueError(
+            "Document ID must be 1-128 letters, numbers, hyphens, or underscores "
+            "and must start with a letter or number"
+        )
+    return doc_id
 
 
 class UserState:
@@ -158,6 +179,8 @@ class Document:
 
     def get_snapshot_at_version(self, target_version: int) -> Optional[str]:
         """Returns document content at a past version."""
+        if not isinstance(target_version, int) or target_version < 0 or target_version > self.version:
+            raise ValueError(f"Invalid snapshot version {target_version}; document is at {self.version}")
         if target_version in self.snapshots:
             return self.snapshots[target_version]
         if target_version == self.version:
@@ -197,6 +220,8 @@ class Document:
 
     def get_snapshot_formatting_at_version(self, target_version: int) -> list:
         """Reconstructs the formatting interval list at a past version."""
+        if not isinstance(target_version, int) or target_version < 0 or target_version > self.version:
+            raise ValueError(f"Invalid snapshot version {target_version}; document is at {self.version}")
         snapshot_versions = sorted([v for v in self.snapshots_formatting.keys() if v <= target_version])
         if not snapshot_versions:
             base_v, base_formatting = 0, []
@@ -236,6 +261,7 @@ class Document:
 
     def save_to_file(self, directory: str) -> str:
         """Persists document state to a JSON file."""
+        validate_document_id(self.doc_id)
         os.makedirs(directory, exist_ok=True)
         filepath = os.path.join(directory, f"{self.doc_id}.json")
         data = {
@@ -310,6 +336,7 @@ class DocumentManager:
         self, doc_id: str, title: Optional[str] = None, initial_text: str = ""
     ) -> Document:
         """Retrieves an existing document or creates a new one."""
+        doc_id = validate_document_id(doc_id)
         if doc_id not in self.documents:
             default_title = title or f"Document {doc_id[:6]}"
             default_text = initial_text or (
@@ -346,7 +373,7 @@ class DocumentManager:
         """Creates a new document with an auto-generated id and returns it."""
         if not doc_id:
             doc_id = "doc-" + uuid.uuid4().hex[:8]
-        doc_id = doc_id.strip()
+        doc_id = validate_document_id(doc_id)
         if doc_id in self.documents:
             raise ValueError(f"Document '{doc_id}' already exists")
         title = title or f"Document {doc_id[:8]}"
@@ -363,6 +390,7 @@ class DocumentManager:
 
     def rename_document(self, doc_id: str, new_title: str) -> Document:
         """Renames an existing document."""
+        doc_id = validate_document_id(doc_id)
         if doc_id not in self.documents:
             raise KeyError(f"Document '{doc_id}' not found")
         self.documents[doc_id].title = new_title
@@ -372,14 +400,18 @@ class DocumentManager:
 
     def delete_document(self, doc_id: str) -> None:
         """Deletes a document from memory and from disk."""
+        doc_id = validate_document_id(doc_id)
         if doc_id == "welcome":
             raise ValueError("The welcome document cannot be deleted")
-        self.documents.pop(doc_id, None)
+        if doc_id not in self.documents:
+            raise KeyError(f"Document '{doc_id}' not found")
+        self.documents.pop(doc_id)
         filepath = os.path.join(self.storage_dir, f"{doc_id}.json")
         if os.path.exists(filepath):
             os.remove(filepath)
 
     def save_document(self, doc_id: str) -> Optional[str]:
+        doc_id = validate_document_id(doc_id)
         if doc_id in self.documents:
             return self.documents[doc_id].save_to_file(self.storage_dir)
         return None
@@ -387,4 +419,3 @@ class DocumentManager:
     def save_all(self) -> None:
         for doc in self.documents.values():
             doc.save_to_file(self.storage_dir)
-

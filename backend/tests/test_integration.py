@@ -182,6 +182,25 @@ class TestServerIntegration(unittest.IsolatedAsyncioTestCase):
                 self.assertEqual(received_cursor["cursor"]["start"], 10)
                 self.assertEqual(received_cursor["cursor"]["end"], 15)
 
+    async def test_websocket_cannot_edit_another_document(self):
+        async with aiohttp.ClientSession() as session:
+            async with session.ws_connect(self.ws_url) as ws:
+                await ws.send_str(json.dumps({
+                    "type": "join", "docId": "allowed-doc", "userId": "u1", "userName": "U1"
+                }))
+                await ws.receive()  # init
+
+                await ws.send_str(json.dumps({
+                    "type": "operation",
+                    "docId": "other-doc",
+                    "userId": "spoofed-user",
+                    "version": 0,
+                    "op": {"type": "insert", "pos": 0, "text": "unauthorized"},
+                }))
+                response = json.loads((await ws.receive()).data)
+                self.assertEqual(response["type"], "error")
+                self.assertNotIn("other-doc", self.server_obj.doc_manager.documents)
+
 
 if __name__ == "__main__":
     unittest.main()

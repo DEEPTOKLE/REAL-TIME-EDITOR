@@ -1,0 +1,1439 @@
+{
+  "docId": "doc-933a935a",
+  "title": "Lab_Assignment_Fixed (2)",
+  "content": "\ufffcFaculty of Computer Applications\ufffc\nMCA Sem-1 \n(AY-2026-27)\n\nLab Book\n\nSub Code: 05MC0108 \n(DBMS)\n\n\n \n\nSub.Faculty Name: Dr. Jaypalsinh A. Gohil\n\nIndex\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nffhdth\n\n\n1. Write a PL/SQL block that find: \n1. Area of Circle \n2. Area of Rectangle\n3. Circumference of Circle\n\n/* \nWrite a PL/SQL block that find \n1 . Area Of Circle \n2 . Area Of Rectangle \n3. Circumference of Circle\n*/\n\nSET SERVEROUTPUT ON\nSET FEEDBACK OFF\nSET VERIFY OFF\n\nDECLARE\nPI CONSTANT NUMBER(3,2) := 3.14;\nR NUMBER(5);\nCAREA NUMBER(7,2);\n\nL NUMBER(5);\nW NUMBER(5);\nRAREA NUMBER(7,2);\n\nCIR NUMBER(7,2);\n\nBEGIN\nR:=&R;\n\nL:=&L;\ufffc\nW:=&W;\n\nDBMS_OUTPUT.PUT_LINE('1. Area of Circle');\nDBMS_OUTPUT.PUT_LINE('=================');\nCAREA:=PI*POWER(R,2);\nDBMS_OUTPUT.PUT_LINE('The Area of Circle is: '||CAREA);\nDBMS_OUTPUT.PUT_LINE('==============================');\nDBMS_OUTPUT.PUT_LINE('\n\nDBMS_OUTPUT.PUT_LINE('2. Area Of Rectangle');\nDBMS_OUTPUT.PUT_LINE('====================');\nRAREA:=(L*W);\nDBMS_OUTPUT.PUT_LINE('The Area of Rectangel is: '||RAREA);\nDBMS_OUTPUT.PUT_LINE('=================================');\nDBMS_OUTPUT.PUT_LINE('\n\nDBMS_OUTPUT.PUT_LINE('3. Circumference of Circle');\nDBMS_OUTPUT.PUT_LINE('==========================');\nCIR:= (2*PI*R);\nDBMS_OUTPUT.PUT_LINE('The Circumference of Circle is: '||CIR);\nDBMS_OUTPUT.PUT_LINE('=====================================');\nEND;\n/\n\nSET SERVEROUTPUT OFF\nSET FEEDBACK ON\nSET VERIFY ON\n\nOutput: \n\ufffc\n\n2. Write a PL/SQL block to accept product name, qty and price from user and then calculate discount in Rs. based on the given (%).\n\n/*\nWrite a PL/SQL block to accept product name, qty and price\nfrom user and then calculate discount in Rs. based on the given (%).\n*/\n\nSET SERVEROUTPUT ON\nSET FEEDBACK OFF\nSET VERIFY OFF\n\nDECLARE\nPNAME           VARCHAR2(30);\nQTY             NUMBER(5);\nPRICE           NUMBER(10,2);\nDISCOUNT_PCT    NUMBER(5,2);\nTOTAL_AMT       NUMBER(10,2);\nDISCOUNT_AMT    NUMBER(10,2);\nNET_AMT         NUMBER(10,2);\n\nBEGIN\n\nPNAME := '&Product_Name';\nQTY := &Quantity;\nPRICE := &Price;\nDISCOUNT_PCT := &Discount_Percentage;\n\nTOTAL_AMT := QTY * PRICE;\n\nDISCOUNT_AMT := (TOTAL_AMT * DISCOUNT_PCT) / 100;\nNET_AMT := TOTAL_AMT - DISCOUNT_AMT;\n\nDBMS_OUTPUT.PUT_LINE('=========================================');\nDBMS_OUTPUT.PUT_LINE('          PRODUCT BILL DETAILS');\nDBMS_OUTPUT.PUT_LINE('=========================================');\nDBMS_OUTPUT.PUT_LINE('Product Name    : ' || PNAME);\nDBMS_OUTPUT.PUT_LINE('Quantity        : ' || QTY);\nDBMS_OUTPUT.PUT_LINE('Price per unit  : ' || PRICE);\nDBMS_OUTPUT.PUT_LINE('Discount (%)    : ' || DISCOUNT_PCT || '%');\nDBMS_OUTPUT.PUT_LINE('                ');\nDBMS_OUTPUT.PUT_LINE('Total Amount    : ' || TOTAL_AMT);\nDBMS_OUTPUT.PUT_LINE('Discount Amount : ' || DISCOUNT_AMT);\nDBMS_OUTPUT.PUT_LINE('Net Amount      : ' || NET_AMT);\nDBMS_OUTPUT.PUT_LINE('=========================================');\n\nEND;\n/\n\nSET SERVEROUTPUT OFF\nSET FEEDBACK ON\nSET VERIFY ON\n\nOutput: \n\n\ufffc\n\n\n\n\n3. Write a PL/SQL block which displays gross salary of employees as per user input EID. (Consider EMP table with EID, EName, Deptno, Deptname Gender, Age, BasicSal) with appropriate data types.) Gross_Salary: BASICSAL + (DA + HRA + Medical) -- PF. Rules: HRA = 15% of basic, DA = 50% of basic, Medical = Rs. 500, PF = 10% of basic.\n\n/*\nWrite a PL/SQL block which displays gross salary of employees as per user input EID.\n\nGross Salary = BASIC SAL + DA + HRA + Medical - PF\n\nRules:\nHRA     = 15% of Basic Salary\nDA      = 50% of Basic Salary\nMedical = Rs. 500\nPF      = 10% of Basic Salary\n*/\n\nSET SERVEROUTPUT ON\nSET FEEDBACK OFF\nSET VERIFY OFF\n\nDECLARE\nV_EID       EMP.EID%TYPE;\nV_ENAME     EMP.ENAME%TYPE;\nV_DEPTNO    EMP.DEPTNO%TYPE;\nV_DEPTNAME  EMP.DEPTNAME%TYPE;\nV_GENDER    EMP.GENDER%TYPE;\nV_AGE       EMP.AGE%TYPE;\nV_BASICSAL  EMP.BASICSAL%TYPE;\n\nV_HRA       NUMBER(10,2);\nV_DA        NUMBER(10,2);\nV_MEDICAL   CONSTANT NUMBER(10,2) := 500;\nV_PF        NUMBER(10,2);\nV_GROSS_SAL NUMBER(10,2);\n\nBEGIN\n\nV_EID := &Enter_Employee_ID;\n\nSELECT EID, ENAME, DEPTNO, DEPTNAME, GENDER, AGE, BASICSAL\nINTO V_EID, V_ENAME, V_DEPTNO, V_DEPTNAME, V_GENDER, V_AGE, V_BASICSAL\nFROM EMP\nWHERE EID = V_EID;\n\nV_HRA := V_BASICSAL * 15 / 100;\nV_DA := V_BASICSAL * 50 / 100;\nV_PF := V_BASICSAL * 10 / 100;\n\nV_GROSS_SAL := V_BASICSAL + V_HRA + V_DA + V_MEDICAL - V_PF;\n\nDBMS_OUTPUT.PUT_LINE('=========================================');\nDBMS_OUTPUT.PUT_LINE('        EMPLOYEE SALARY DETAILS');\nDBMS_OUTPUT.PUT_LINE('=========================================');\nDBMS_OUTPUT.PUT_LINE('Employee ID : ' || V_EID);\nDBMS_OUTPUT.PUT_LINE('Name        : ' || V_ENAME);\nDBMS_OUTPUT.PUT_LINE('Department No : ' || V_DEPTNO);\nDBMS_OUTPUT.PUT_LINE('Department Name : ' || V_DEPTNAME);\nDBMS_OUTPUT.PUT_LINE('Gender      : ' || V_GENDER);\nDBMS_OUTPUT.PUT_LINE('Age         : ' || V_AGE);\nDBMS_OUTPUT.PUT_LINE('-----------------------------------------');\nDBMS_OUTPUT.PUT_LINE('Basic Salary : ' || V_BASICSAL);\nDBMS_OUTPUT.PUT_LINE('HRA (15%)    : ' || V_HRA);\nDBMS_OUTPUT.PUT_LINE('DA (50%)     : ' || V_DA);\nDBMS_OUTPUT.PUT_LINE('Medical      : ' || V_MEDICAL);\nDBMS_OUTPUT.PUT_LINE('PF (10%)     : ' || V_PF);\nDBMS_OUTPUT.PUT_LINE('-----------------------------------------');\nDBMS_OUTPUT.PUT_LINE('Gross Salary : ' || V_GROSS_SAL);\nDBMS_OUTPUT.PUT_LINE('=========================================');\n\nEXCEPTION\nWHEN NO_DATA_FOUND THEN\nDBMS_OUTPUT.PUT_LINE('Employee with EID ' || V_EID || ' not found!');\nWHEN OTHERS THEN\nDBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);\n\nEND;\n/\n\nSET SERVEROUTPUT OFF\nSET FEEDBACK ON\nSET VERIFY ON\n\nOutput: \n\ufffc\n\n\n\n\n\n\n\n\n\n\n4. Write a PL/SQL block which accepts measurement in feet and displays it in cm, inch and meter.\n\n/*\nWrite a PL/SQL block which accepts measurement in feet and displays it in cm, inch and meter.\n*/\n\nSET SERVEROUTPUT ON\nSET FEEDBACK OFF\nSET VERIFY OFF\n\nDECLARE\nFEET    NUMBER(10,2);\nINCH    NUMBER(10,2);\nCM      NUMBER(10,2);\nMETER   NUMBER(10,2);\n\nBEGIN\n\nFEET := &Enter_Measurement_in_Feet;\n\nINCH  := FEET * 12;\nCM    := FEET * 30.48;\nMETER := FEET * 0.3048;\n\nDBMS_OUTPUT.PUT_LINE('=========================================');\nDBMS_OUTPUT.PUT_LINE('         MEASUREMENT CONVERSION');\nDBMS_OUTPUT.PUT_LINE('=========================================');\nDBMS_OUTPUT.PUT_LINE('Feet        : '||FEET||' ft');\nDBMS_OUTPUT.PUT_LINE('            ');\nDBMS_OUTPUT.PUT_LINE('Inches      : '||INCH||' in');\nDBMS_OUTPUT.PUT_LINE('Centimeters : '||CM||' cm');\nDBMS_OUTPUT.PUT_LINE('Meters      : '||METER||' m');\nDBMS_OUTPUT.PUT_LINE('=========================================');\n\nEND;\n/\n\nSET SERVEROUTPUT OFF\nSET FEEDBACK ON\nSET VERIFY ON\n\n\n\nOutput: \n\ufffc\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n5. Write a PL/SQL block to calculate the square and cube of the given number.\n\n/*\nWrite a PL/SQL block to calculate the square and cube of the given number.\n*/\n\nSET SERVEROUTPUT ON\nSET FEEDBACK OFF\nSET VERIFY OFF\n\nDECLARE\nNUM    NUMBER(10);\nSQUARE NUMBER(20);\nCUBE   NUMBER(30);\n\nBEGIN\n\nNUM := &Enter_a_Number;\n\nSQUARE := NUM * NUM;\nCUBE   := NUM * NUM * NUM;\n\nDBMS_OUTPUT.PUT_LINE('=========================================');\nDBMS_OUTPUT.PUT_LINE('       SQUARE AND CUBE CALCULATOR');\nDBMS_OUTPUT.PUT_LINE('=========================================');\nDBMS_OUTPUT.PUT_LINE('Number : '||NUM);\nDBMS_OUTPUT.PUT_LINE('        ');\nDBMS_OUTPUT.PUT_LINE('Square : '||SQUARE);\nDBMS_OUTPUT.PUT_LINE('Cube   : '||CUBE);\nDBMS_OUTPUT.PUT_LINE('=========================================');\n\nEND;\n/\n\nSET SERVEROUTPUT OFF\nSET FEEDBACK ON\nSET VERIFY ON\n\n\n\n\n\n\n\nOutput: \n\n\ufffc\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n6. Write a PL/SQL block which accepts measurement in feet and displays it in cm, inch and meter.\n\n/*\nWrite a PL/SQL block which accepts measurement in feet and displays it in cm, inch and meter.\n*/\n\nSET SERVEROUTPUT ON\nSET FEEDBACK OFF\nSET VERIFY OFF\n\nDECLARE\nFEET    NUMBER(10,2);\nINCH    NUMBER(10,2);\nCM      NUMBER(10,2);\nMETER   NUMBER(10,2);\n\nBEGIN\n\nFEET := &Enter_Measurement_in_Feet;\n\nINCH  := FEET * 12;\nCM    := FEET * 30.48;\nMETER := FEET * 0.3048;\n\nDBMS_OUTPUT.PUT_LINE('=========================================');\nDBMS_OUTPUT.PUT_LINE('         MEASUREMENT CONVERSION');\nDBMS_OUTPUT.PUT_LINE('=========================================');\nDBMS_OUTPUT.PUT_LINE('Feet        : '||FEET||' ft');\nDBMS_OUTPUT.PUT_LINE('            ');\nDBMS_OUTPUT.PUT_LINE('Inches      : '||INCH||' in');\nDBMS_OUTPUT.PUT_LINE('Centimeters : '||CM||' cm');\nDBMS_OUTPUT.PUT_LINE('Meters      : '||METER||' m');\nDBMS_OUTPUT.PUT_LINE('=========================================');\n\nEND;\n/\n\nSET SERVEROUTPUT OFF\nSET FEEDBACK ON\nSET VERIFY ON\n\n\nOutput:\n\ufffc \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n7. Write a PL/SQL block which converts temperature from Celsius to Fahrenheit.\n\n/*\nWrite a PL/SQL block which converts temperature from Celsius to Fahrenheit.\n*/\n\nSET SERVEROUTPUT ON\nSET FEEDBACK OFF\nSET VERIFY OFF\n\nDECLARE\nCELSIUS     NUMBER(10,2);\nFAHRENHEIT  NUMBER(10,2);\n\nBEGIN\n\nCELSIUS    := &Enter_Temperature_in_Celsius;\nFAHRENHEIT := (CELSIUS * 9/5) + 32;\n\nDBMS_OUTPUT.PUT_LINE('=========================================');\nDBMS_OUTPUT.PUT_LINE('          TEMPERATURE CONVERTER');\nDBMS_OUTPUT.PUT_LINE('=========================================');\nDBMS_OUTPUT.PUT_LINE('Celsius    : '||CELSIUS||'\u00b0C');\nDBMS_OUTPUT.PUT_LINE('           ');\nDBMS_OUTPUT.PUT_LINE('Fahrenheit : '||FAHRENHEIT||'\u00b0F');\nDBMS_OUTPUT.PUT_LINE('=========================================');\n\nEND;\n/\n\nSET SERVEROUTPUT OFF\nSET FEEDBACK ON\nSET VERIFY ON\n\n\n\n\n\n\n\n\n\n\n\n\nOutput: \n\n\ufffc\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n8. Write a PL/SQL block to delete the record of employee for given EID.\n\n/*\nWrite a PL/SQL block to delete the record of employee for given EID.\n*/\n\nSET SERVEROUTPUT ON\nSET FEEDBACK OFF\nSET VERIFY OFF\n\nDECLARE\nV_EID   EMP.EID%TYPE;\nV_COUNT NUMBER;\n\nBEGIN\n\nV_EID := &Enter_Employee_ID_to_Delete;\n\nSELECT COUNT(*) INTO V_COUNT\nFROM EMP\nWHERE EID = V_EID;\n\nIF V_COUNT = 0 THEN\nDBMS_OUTPUT.PUT_LINE('=========================================');\nDBMS_OUTPUT.PUT_LINE('Employee with EID '||V_EID||' does not exist!');\nDBMS_OUTPUT.PUT_LINE('=========================================');\nELSE\nDELETE FROM EMP WHERE EID = V_EID;\n\nDBMS_OUTPUT.PUT_LINE('=========================================');\nDBMS_OUTPUT.PUT_LINE('        EMPLOYEE DELETION STATUS');\nDBMS_OUTPUT.PUT_LINE('=========================================');\nDBMS_OUTPUT.PUT_LINE('Employee with EID '||V_EID||' deleted successfully!');\nDBMS_OUTPUT.PUT_LINE('Number of rows deleted: '||SQL%ROWCOUNT);\nDBMS_OUTPUT.PUT_LINE('=========================================');\n\nCOMMIT;\nEND IF;\n\nEXCEPTION\nWHEN OTHERS THEN\nDBMS_OUTPUT.PUT_LINE('Error: '||SQLERRM);\nROLLBACK;\n\nEND;\n/\n\nSET SERVEROUTPUT OFF\nSET FEEDBACK ON\nSET VERIFY ON\n\n\n\nOutput: \n\ufffc\n\n\n\n\n\n\n\n\n\n\n9. Write a PL/SQL block that calculates the simple interest based on given principal amount, \nrate of interest and number of years.\n\n/*\nWrite a PL/SQL block that calculates the simple interest\nbased on given principal amount, rate of interest and number of years.\n*/\n\nSET SERVEROUTPUT ON\nSET FEEDBACK OFF\nSET VERIFY OFF\n\nDECLARE\nPRINCIPAL       NUMBER(12,2);\nRATE            NUMBER(5,2);\nYEARS           NUMBER(5,2);\nSIMPLE_INTEREST NUMBER(12,2);\nTOTAL_AMOUNT    NUMBER(12,2);\n\nBEGIN\n\nPRINCIPAL := &Enter_Principal_Amount;\nRATE      := &Enter_Rate_of_Interest_Percentage;\nYEARS     := &Enter_Number_of_Years;\n\nSIMPLE_INTEREST := (PRINCIPAL * RATE * YEARS) / 100;\nTOTAL_AMOUNT    := PRINCIPAL + SIMPLE_INTEREST;\n\nDBMS_OUTPUT.PUT_LINE('=========================================');\nDBMS_OUTPUT.PUT_LINE('        SIMPLE INTEREST CALCULATOR');\nDBMS_OUTPUT.PUT_LINE('=========================================');\nDBMS_OUTPUT.PUT_LINE('Principal Amount : '||PRINCIPAL);\nDBMS_OUTPUT.PUT_LINE('Rate of Interest : '||RATE||'%');\nDBMS_OUTPUT.PUT_LINE('Time Period      : '||YEARS||' years');\nDBMS_OUTPUT.PUT_LINE('         ');\nDBMS_OUTPUT.PUT_LINE('Simple Interest  : '||SIMPLE_INTEREST);\nDBMS_OUTPUT.PUT_LINE('Total Amount     : '||TOTAL_AMOUNT);\nDBMS_OUTPUT.PUT_LINE('=========================================');\n\nEND;\n/\n\nSET SERVEROUTPUT OFF\nSET FEEDBACK ON\nSET VERIFY ON\n\nOutput: \ufffc\n\n\n\n\n\n\n\n\n\n\n\n10. Write a PL/SQL block to calculate the square and cube of the given number.\n\n/*\nWrite a PL/SQL block to calculate the square and cube of the given number.\n*/\n\nSET SERVEROUTPUT ON\nSET FEEDBACK OFF\nSET VERIFY OFF\n\nDECLARE\nNUM    NUMBER(10);\nSQUARE NUMBER(20);\nCUBE   NUMBER(30);\n\nBEGIN\n\nNUM := &Enter_a_Number;\n\nSQUARE := NUM * NUM;\nCUBE   := NUM * NUM * NUM;\n\nDBMS_OUTPUT.PUT_LINE('=========================================');\nDBMS_OUTPUT.PUT_LINE('       SQUARE AND CUBE CALCULATOR');\nDBMS_OUTPUT.PUT_LINE('=========================================');\nDBMS_OUTPUT.PUT_LINE('Number : '||NUM);\nDBMS_OUTPUT.PUT_LINE('        ');\nDBMS_OUTPUT.PUT_LINE('Square : '||SQUARE);\nDBMS_OUTPUT.PUT_LINE('Cube   : '||CUBE);\nDBMS_OUTPUT.PUT_LINE('=========================================');\n\nEND;\n/\n\nSET SERVEROUTPUT OFF\nSET FEEDBACK ON\nSET VERIFY ON\n\n\n\n\n\nOutput: \n\n\ufffc",
+  "version": 28,
+  "createdAt": 1788161667.6706374,
+  "updatedAt": 1788162942.766612,
+  "history": [
+    {
+      "type": "insert",
+      "pos": 166,
+      "text": "\n",
+      "userId": "aya7ygq2",
+      "opId": "xo7i5t2"
+    },
+    {
+      "type": "insert",
+      "pos": 167,
+      "text": "\n",
+      "userId": "aya7ygq2",
+      "opId": "t74gomn"
+    },
+    {
+      "type": "insert",
+      "pos": 168,
+      "text": "\n",
+      "userId": "aya7ygq2",
+      "opId": "shy50xr"
+    },
+    {
+      "type": "insert",
+      "pos": 169,
+      "text": "\n",
+      "userId": "aya7ygq2",
+      "opId": "uhfyzzd"
+    },
+    {
+      "type": "insert",
+      "pos": 170,
+      "text": "\n",
+      "userId": "aya7ygq2",
+      "opId": "e3hf85j"
+    },
+    {
+      "type": "insert",
+      "pos": 171,
+      "text": "\n",
+      "userId": "aya7ygq2",
+      "opId": "gwplwjp"
+    },
+    {
+      "type": "insert",
+      "pos": 172,
+      "text": "\n",
+      "userId": "aya7ygq2",
+      "opId": "xxvuuzv"
+    },
+    {
+      "type": "insert",
+      "pos": 173,
+      "text": "\n",
+      "userId": "aya7ygq2",
+      "opId": "mrccju9"
+    },
+    {
+      "type": "insert",
+      "pos": 174,
+      "text": "\n",
+      "userId": "aya7ygq2",
+      "opId": "o5p55qe"
+    },
+    {
+      "type": "insert",
+      "pos": 175,
+      "text": "\n",
+      "userId": "aya7ygq2",
+      "opId": "kfygytl"
+    },
+    {
+      "type": "insert",
+      "pos": 176,
+      "text": "\n",
+      "userId": "aya7ygq2",
+      "opId": "eeq4mev"
+    },
+    {
+      "type": "insert",
+      "pos": 177,
+      "text": "\n",
+      "userId": "aya7ygq2",
+      "opId": "sd04zqz"
+    },
+    {
+      "type": "insert",
+      "pos": 178,
+      "text": "\n",
+      "userId": "aya7ygq2",
+      "opId": "dgapblk"
+    },
+    {
+      "type": "insert",
+      "pos": 179,
+      "text": "\n",
+      "userId": "aya7ygq2",
+      "opId": "0st6kw6"
+    },
+    {
+      "type": "insert",
+      "pos": 180,
+      "text": "\n",
+      "userId": "aya7ygq2",
+      "opId": "kve38h2"
+    },
+    {
+      "type": "insert",
+      "pos": 178,
+      "text": "f",
+      "userId": "aya7ygq2",
+      "opId": "7vfucvp"
+    },
+    {
+      "type": "insert",
+      "pos": 179,
+      "text": "f",
+      "userId": "aya7ygq2",
+      "opId": "6ar7nol"
+    },
+    {
+      "type": "insert",
+      "pos": 180,
+      "text": "h",
+      "userId": "aya7ygq2",
+      "opId": "8bp2x6s"
+    },
+    {
+      "type": "insert",
+      "pos": 181,
+      "text": "d",
+      "userId": "aya7ygq2",
+      "opId": "2fxvyms"
+    },
+    {
+      "type": "insert",
+      "pos": 182,
+      "text": "t",
+      "userId": "aya7ygq2",
+      "opId": "h62ite8"
+    },
+    {
+      "type": "insert",
+      "pos": 183,
+      "text": "h",
+      "userId": "aya7ygq2",
+      "opId": "bxr1ab0"
+    },
+    {
+      "type": "insert",
+      "pos": 79,
+      "text": "\ufffc",
+      "userId": "aya7ygq2",
+      "opId": "2a4kvma"
+    },
+    {
+      "type": "format",
+      "start": 79,
+      "end": 80,
+      "attributes": {
+        "image": "0522ebc966c6409ea9167ca04f7e8aff",
+        "width": 600,
+        "height": 1254
+      },
+      "prevAttributes": {
+        "bold": true
+      },
+      "userId": "aya7ygq2",
+      "opId": "72ohm51"
+    },
+    {
+      "type": "format",
+      "start": 79,
+      "end": 80,
+      "attributes": {
+        "image": "0522ebc966c6409ea9167ca04f7e8aff",
+        "width": 373,
+        "height": 780
+      },
+      "prevAttributes": {
+        "bold": true,
+        "image": "0522ebc966c6409ea9167ca04f7e8aff",
+        "width": 600,
+        "height": 1254
+      },
+      "userId": "aya7ygq2",
+      "opId": "yrpwv3a"
+    },
+    {
+      "type": "format",
+      "start": 79,
+      "end": 80,
+      "attributes": {
+        "image": "0522ebc966c6409ea9167ca04f7e8aff",
+        "width": 146,
+        "height": 305
+      },
+      "prevAttributes": {
+        "bold": true,
+        "image": "0522ebc966c6409ea9167ca04f7e8aff",
+        "width": 373,
+        "height": 780
+      },
+      "userId": "aya7ygq2",
+      "opId": "4dhr703"
+    },
+    {
+      "type": "delete",
+      "pos": 79,
+      "length": 1,
+      "text": "\ufffc",
+      "userId": "aya7ygq2",
+      "opId": "y8y5fop"
+    },
+    {
+      "type": "insert",
+      "pos": 612,
+      "text": "\ufffc",
+      "userId": "aya7ygq2",
+      "opId": "bj1hc8u"
+    },
+    {
+      "type": "format",
+      "start": 612,
+      "end": 613,
+      "attributes": {
+        "image": "35fae1e6562045229268ffdb7d7c834d",
+        "width": 600,
+        "height": 950
+      },
+      "prevAttributes": {},
+      "userId": "aya7ygq2",
+      "opId": "sq8sf9c"
+    }
+  ],
+  "historyMetadata": [
+    {
+      "version": 1,
+      "userId": "aya7ygq2",
+      "type": "insert",
+      "timestamp": 1788161673.474798,
+      "summary": "Insert(pos=166, text='\\n', user=aya7ygq2)"
+    },
+    {
+      "version": 2,
+      "userId": "aya7ygq2",
+      "type": "insert",
+      "timestamp": 1788161673.658287,
+      "summary": "Insert(pos=167, text='\\n', user=aya7ygq2)"
+    },
+    {
+      "version": 3,
+      "userId": "aya7ygq2",
+      "type": "insert",
+      "timestamp": 1788161673.799001,
+      "summary": "Insert(pos=168, text='\\n', user=aya7ygq2)"
+    },
+    {
+      "version": 4,
+      "userId": "aya7ygq2",
+      "type": "insert",
+      "timestamp": 1788161674.159094,
+      "summary": "Insert(pos=169, text='\\n', user=aya7ygq2)"
+    },
+    {
+      "version": 5,
+      "userId": "aya7ygq2",
+      "type": "insert",
+      "timestamp": 1788161674.307596,
+      "summary": "Insert(pos=170, text='\\n', user=aya7ygq2)"
+    },
+    {
+      "version": 6,
+      "userId": "aya7ygq2",
+      "type": "insert",
+      "timestamp": 1788161674.5524728,
+      "summary": "Insert(pos=171, text='\\n', user=aya7ygq2)"
+    },
+    {
+      "version": 7,
+      "userId": "aya7ygq2",
+      "type": "insert",
+      "timestamp": 1788161674.744412,
+      "summary": "Insert(pos=172, text='\\n', user=aya7ygq2)"
+    },
+    {
+      "version": 8,
+      "userId": "aya7ygq2",
+      "type": "insert",
+      "timestamp": 1788161674.912807,
+      "summary": "Insert(pos=173, text='\\n', user=aya7ygq2)"
+    },
+    {
+      "version": 9,
+      "userId": "aya7ygq2",
+      "type": "insert",
+      "timestamp": 1788161675.2445874,
+      "summary": "Insert(pos=174, text='\\n', user=aya7ygq2)"
+    },
+    {
+      "version": 10,
+      "userId": "aya7ygq2",
+      "type": "insert",
+      "timestamp": 1788161675.398077,
+      "summary": "Insert(pos=175, text='\\n', user=aya7ygq2)"
+    },
+    {
+      "version": 11,
+      "userId": "aya7ygq2",
+      "type": "insert",
+      "timestamp": 1788161675.5649498,
+      "summary": "Insert(pos=176, text='\\n', user=aya7ygq2)"
+    },
+    {
+      "version": 12,
+      "userId": "aya7ygq2",
+      "type": "insert",
+      "timestamp": 1788161675.722935,
+      "summary": "Insert(pos=177, text='\\n', user=aya7ygq2)"
+    },
+    {
+      "version": 13,
+      "userId": "aya7ygq2",
+      "type": "insert",
+      "timestamp": 1788161675.8384192,
+      "summary": "Insert(pos=178, text='\\n', user=aya7ygq2)"
+    },
+    {
+      "version": 14,
+      "userId": "aya7ygq2",
+      "type": "insert",
+      "timestamp": 1788161675.9926405,
+      "summary": "Insert(pos=179, text='\\n', user=aya7ygq2)"
+    },
+    {
+      "version": 15,
+      "userId": "aya7ygq2",
+      "type": "insert",
+      "timestamp": 1788161676.2496457,
+      "summary": "Insert(pos=180, text='\\n', user=aya7ygq2)"
+    },
+    {
+      "version": 16,
+      "userId": "aya7ygq2",
+      "type": "insert",
+      "timestamp": 1788161680.119843,
+      "summary": "Insert(pos=178, text='f', user=aya7ygq2)"
+    },
+    {
+      "version": 17,
+      "userId": "aya7ygq2",
+      "type": "insert",
+      "timestamp": 1788161680.4918354,
+      "summary": "Insert(pos=179, text='f', user=aya7ygq2)"
+    },
+    {
+      "version": 18,
+      "userId": "aya7ygq2",
+      "type": "insert",
+      "timestamp": 1788161680.6442358,
+      "summary": "Insert(pos=180, text='h', user=aya7ygq2)"
+    },
+    {
+      "version": 19,
+      "userId": "aya7ygq2",
+      "type": "insert",
+      "timestamp": 1788161680.7417953,
+      "summary": "Insert(pos=181, text='d', user=aya7ygq2)"
+    },
+    {
+      "version": 20,
+      "userId": "aya7ygq2",
+      "type": "insert",
+      "timestamp": 1788161680.825399,
+      "summary": "Insert(pos=182, text='t', user=aya7ygq2)"
+    },
+    {
+      "version": 21,
+      "userId": "aya7ygq2",
+      "type": "insert",
+      "timestamp": 1788161680.942258,
+      "summary": "Insert(pos=183, text='h', user=aya7ygq2)"
+    },
+    {
+      "version": 22,
+      "userId": "aya7ygq2",
+      "type": "insert",
+      "timestamp": 1788161708.7670736,
+      "summary": "Insert(pos=79, text='\ufffc', user=aya7ygq2)"
+    },
+    {
+      "version": 23,
+      "userId": "aya7ygq2",
+      "type": "format",
+      "timestamp": 1788161708.870806,
+      "summary": "Format(start=79, end=80, attrs={'image': '0522ebc966c6409ea9167ca04f7e8aff', 'width': 600, 'height': 1254}, user=aya7ygq2)"
+    },
+    {
+      "version": 24,
+      "userId": "aya7ygq2",
+      "type": "format",
+      "timestamp": 1788161712.6923966,
+      "summary": "Format(start=79, end=80, attrs={'image': '0522ebc966c6409ea9167ca04f7e8aff', 'width': 373, 'height': 780}, user=aya7ygq2)"
+    },
+    {
+      "version": 25,
+      "userId": "aya7ygq2",
+      "type": "format",
+      "timestamp": 1788161716.8722372,
+      "summary": "Format(start=79, end=80, attrs={'image': '0522ebc966c6409ea9167ca04f7e8aff', 'width': 146, 'height': 305}, user=aya7ygq2)"
+    },
+    {
+      "version": 26,
+      "userId": "aya7ygq2",
+      "type": "delete",
+      "timestamp": 1788161719.6670527,
+      "summary": "Delete(pos=79, len=1, text='\ufffc', user=aya7ygq2)"
+    },
+    {
+      "version": 27,
+      "userId": "aya7ygq2",
+      "type": "insert",
+      "timestamp": 1788162942.700274,
+      "summary": "Insert(pos=612, text='\ufffc', user=aya7ygq2)"
+    },
+    {
+      "version": 28,
+      "userId": "aya7ygq2",
+      "type": "format",
+      "timestamp": 1788162942.766612,
+      "summary": "Format(start=612, end=613, attrs={'image': '35fae1e6562045229268ffdb7d7c834d', 'width': 600, 'height': 950}, user=aya7ygq2)"
+    }
+  ],
+  "snapshots": {
+    "0": "\ufffcFaculty of Computer Applications\ufffc\nMCA Sem-1 \n(AY-2026-27)\n\nLab Book\n\nSub Code: 05MC0108 \n(DBMS)\n\n\n \n\nSub.Faculty Name: Dr. Jaypalsinh A. Gohil\n\nIndex\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n1. Write a PL/SQL block that find: \n1. Area of Circle \n2. Area of Rectangle\n3. Circumference of Circle\n\n/* \nWrite a PL/SQL block that find \n1 . Area Of Circle \n2 . Area Of Rectangle \n3. Circumference of Circle\n*/\n\nSET SERVEROUTPUT ON\nSET FEEDBACK OFF\nSET VERIFY OFF\n\nDECLARE\nPI CONSTANT NUMBER(3,2) := 3.14;\nR NUMBER(5);\nCAREA NUMBER(7,2);\n\nL NUMBER(5);\nW NUMBER(5);\nRAREA NUMBER(7,2);\n\nCIR NUMBER(7,2);\n\nBEGIN\nR:=&R;\n\nL:=&L;\nW:=&W;\n\nDBMS_OUTPUT.PUT_LINE('1. Area of Circle');\nDBMS_OUTPUT.PUT_LINE('=================');\nCAREA:=PI*POWER(R,2);\nDBMS_OUTPUT.PUT_LINE('The Area of Circle is: '||CAREA);\nDBMS_OUTPUT.PUT_LINE('==============================');\nDBMS_OUTPUT.PUT_LINE('\n\nDBMS_OUTPUT.PUT_LINE('2. Area Of Rectangle');\nDBMS_OUTPUT.PUT_LINE('====================');\nRAREA:=(L*W);\nDBMS_OUTPUT.PUT_LINE('The Area of Rectangel is: '||RAREA);\nDBMS_OUTPUT.PUT_LINE('=================================');\nDBMS_OUTPUT.PUT_LINE('\n\nDBMS_OUTPUT.PUT_LINE('3. Circumference of Circle');\nDBMS_OUTPUT.PUT_LINE('==========================');\nCIR:= (2*PI*R);\nDBMS_OUTPUT.PUT_LINE('The Circumference of Circle is: '||CIR);\nDBMS_OUTPUT.PUT_LINE('=====================================');\nEND;\n/\n\nSET SERVEROUTPUT OFF\nSET FEEDBACK ON\nSET VERIFY ON\n\nOutput: \n\ufffc\n\n2. Write a PL/SQL block to accept product name, qty and price from user and then calculate discount in Rs. based on the given (%).\n\n/*\nWrite a PL/SQL block to accept product name, qty and price\nfrom user and then calculate discount in Rs. based on the given (%).\n*/\n\nSET SERVEROUTPUT ON\nSET FEEDBACK OFF\nSET VERIFY OFF\n\nDECLARE\nPNAME           VARCHAR2(30);\nQTY             NUMBER(5);\nPRICE           NUMBER(10,2);\nDISCOUNT_PCT    NUMBER(5,2);\nTOTAL_AMT       NUMBER(10,2);\nDISCOUNT_AMT    NUMBER(10,2);\nNET_AMT         NUMBER(10,2);\n\nBEGIN\n\nPNAME := '&Product_Name';\nQTY := &Quantity;\nPRICE := &Price;\nDISCOUNT_PCT := &Discount_Percentage;\n\nTOTAL_AMT := QTY * PRICE;\n\nDISCOUNT_AMT := (TOTAL_AMT * DISCOUNT_PCT) / 100;\nNET_AMT := TOTAL_AMT - DISCOUNT_AMT;\n\nDBMS_OUTPUT.PUT_LINE('=========================================');\nDBMS_OUTPUT.PUT_LINE('          PRODUCT BILL DETAILS');\nDBMS_OUTPUT.PUT_LINE('=========================================');\nDBMS_OUTPUT.PUT_LINE('Product Name    : ' || PNAME);\nDBMS_OUTPUT.PUT_LINE('Quantity        : ' || QTY);\nDBMS_OUTPUT.PUT_LINE('Price per unit  : ' || PRICE);\nDBMS_OUTPUT.PUT_LINE('Discount (%)    : ' || DISCOUNT_PCT || '%');\nDBMS_OUTPUT.PUT_LINE('                ');\nDBMS_OUTPUT.PUT_LINE('Total Amount    : ' || TOTAL_AMT);\nDBMS_OUTPUT.PUT_LINE('Discount Amount : ' || DISCOUNT_AMT);\nDBMS_OUTPUT.PUT_LINE('Net Amount      : ' || NET_AMT);\nDBMS_OUTPUT.PUT_LINE('=========================================');\n\nEND;\n/\n\nSET SERVEROUTPUT OFF\nSET FEEDBACK ON\nSET VERIFY ON\n\nOutput: \n\n\ufffc\n\n\n\n\n3. Write a PL/SQL block which displays gross salary of employees as per user input EID. (Consider EMP table with EID, EName, Deptno, Deptname Gender, Age, BasicSal) with appropriate data types.) Gross_Salary: BASICSAL + (DA + HRA + Medical) -- PF. Rules: HRA = 15% of basic, DA = 50% of basic, Medical = Rs. 500, PF = 10% of basic.\n\n/*\nWrite a PL/SQL block which displays gross salary of employees as per user input EID.\n\nGross Salary = BASIC SAL + DA + HRA + Medical - PF\n\nRules:\nHRA     = 15% of Basic Salary\nDA      = 50% of Basic Salary\nMedical = Rs. 500\nPF      = 10% of Basic Salary\n*/\n\nSET SERVEROUTPUT ON\nSET FEEDBACK OFF\nSET VERIFY OFF\n\nDECLARE\nV_EID       EMP.EID%TYPE;\nV_ENAME     EMP.ENAME%TYPE;\nV_DEPTNO    EMP.DEPTNO%TYPE;\nV_DEPTNAME  EMP.DEPTNAME%TYPE;\nV_GENDER    EMP.GENDER%TYPE;\nV_AGE       EMP.AGE%TYPE;\nV_BASICSAL  EMP.BASICSAL%TYPE;\n\nV_HRA       NUMBER(10,2);\nV_DA        NUMBER(10,2);\nV_MEDICAL   CONSTANT NUMBER(10,2) := 500;\nV_PF        NUMBER(10,2);\nV_GROSS_SAL NUMBER(10,2);\n\nBEGIN\n\nV_EID := &Enter_Employee_ID;\n\nSELECT EID, ENAME, DEPTNO, DEPTNAME, GENDER, AGE, BASICSAL\nINTO V_EID, V_ENAME, V_DEPTNO, V_DEPTNAME, V_GENDER, V_AGE, V_BASICSAL\nFROM EMP\nWHERE EID = V_EID;\n\nV_HRA := V_BASICSAL * 15 / 100;\nV_DA := V_BASICSAL * 50 / 100;\nV_PF := V_BASICSAL * 10 / 100;\n\nV_GROSS_SAL := V_BASICSAL + V_HRA + V_DA + V_MEDICAL - V_PF;\n\nDBMS_OUTPUT.PUT_LINE('=========================================');\nDBMS_OUTPUT.PUT_LINE('        EMPLOYEE SALARY DETAILS');\nDBMS_OUTPUT.PUT_LINE('=========================================');\nDBMS_OUTPUT.PUT_LINE('Employee ID : ' || V_EID);\nDBMS_OUTPUT.PUT_LINE('Name        : ' || V_ENAME);\nDBMS_OUTPUT.PUT_LINE('Department No : ' || V_DEPTNO);\nDBMS_OUTPUT.PUT_LINE('Department Name : ' || V_DEPTNAME);\nDBMS_OUTPUT.PUT_LINE('Gender      : ' || V_GENDER);\nDBMS_OUTPUT.PUT_LINE('Age         : ' || V_AGE);\nDBMS_OUTPUT.PUT_LINE('-----------------------------------------');\nDBMS_OUTPUT.PUT_LINE('Basic Salary : ' || V_BASICSAL);\nDBMS_OUTPUT.PUT_LINE('HRA (15%)    : ' || V_HRA);\nDBMS_OUTPUT.PUT_LINE('DA (50%)     : ' || V_DA);\nDBMS_OUTPUT.PUT_LINE('Medical      : ' || V_MEDICAL);\nDBMS_OUTPUT.PUT_LINE('PF (10%)     : ' || V_PF);\nDBMS_OUTPUT.PUT_LINE('-----------------------------------------');\nDBMS_OUTPUT.PUT_LINE('Gross Salary : ' || V_GROSS_SAL);\nDBMS_OUTPUT.PUT_LINE('=========================================');\n\nEXCEPTION\nWHEN NO_DATA_FOUND THEN\nDBMS_OUTPUT.PUT_LINE('Employee with EID ' || V_EID || ' not found!');\nWHEN OTHERS THEN\nDBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);\n\nEND;\n/\n\nSET SERVEROUTPUT OFF\nSET FEEDBACK ON\nSET VERIFY ON\n\nOutput: \n\ufffc\n\n\n\n\n\n\n\n\n\n\n4. Write a PL/SQL block which accepts measurement in feet and displays it in cm, inch and meter.\n\n/*\nWrite a PL/SQL block which accepts measurement in feet and displays it in cm, inch and meter.\n*/\n\nSET SERVEROUTPUT ON\nSET FEEDBACK OFF\nSET VERIFY OFF\n\nDECLARE\nFEET    NUMBER(10,2);\nINCH    NUMBER(10,2);\nCM      NUMBER(10,2);\nMETER   NUMBER(10,2);\n\nBEGIN\n\nFEET := &Enter_Measurement_in_Feet;\n\nINCH  := FEET * 12;\nCM    := FEET * 30.48;\nMETER := FEET * 0.3048;\n\nDBMS_OUTPUT.PUT_LINE('=========================================');\nDBMS_OUTPUT.PUT_LINE('         MEASUREMENT CONVERSION');\nDBMS_OUTPUT.PUT_LINE('=========================================');\nDBMS_OUTPUT.PUT_LINE('Feet        : '||FEET||' ft');\nDBMS_OUTPUT.PUT_LINE('            ');\nDBMS_OUTPUT.PUT_LINE('Inches      : '||INCH||' in');\nDBMS_OUTPUT.PUT_LINE('Centimeters : '||CM||' cm');\nDBMS_OUTPUT.PUT_LINE('Meters      : '||METER||' m');\nDBMS_OUTPUT.PUT_LINE('=========================================');\n\nEND;\n/\n\nSET SERVEROUTPUT OFF\nSET FEEDBACK ON\nSET VERIFY ON\n\n\n\nOutput: \n\ufffc\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n5. Write a PL/SQL block to calculate the square and cube of the given number.\n\n/*\nWrite a PL/SQL block to calculate the square and cube of the given number.\n*/\n\nSET SERVEROUTPUT ON\nSET FEEDBACK OFF\nSET VERIFY OFF\n\nDECLARE\nNUM    NUMBER(10);\nSQUARE NUMBER(20);\nCUBE   NUMBER(30);\n\nBEGIN\n\nNUM := &Enter_a_Number;\n\nSQUARE := NUM * NUM;\nCUBE   := NUM * NUM * NUM;\n\nDBMS_OUTPUT.PUT_LINE('=========================================');\nDBMS_OUTPUT.PUT_LINE('       SQUARE AND CUBE CALCULATOR');\nDBMS_OUTPUT.PUT_LINE('=========================================');\nDBMS_OUTPUT.PUT_LINE('Number : '||NUM);\nDBMS_OUTPUT.PUT_LINE('        ');\nDBMS_OUTPUT.PUT_LINE('Square : '||SQUARE);\nDBMS_OUTPUT.PUT_LINE('Cube   : '||CUBE);\nDBMS_OUTPUT.PUT_LINE('=========================================');\n\nEND;\n/\n\nSET SERVEROUTPUT OFF\nSET FEEDBACK ON\nSET VERIFY ON\n\n\n\n\n\n\n\nOutput: \n\n\ufffc\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n6. Write a PL/SQL block which accepts measurement in feet and displays it in cm, inch and meter.\n\n/*\nWrite a PL/SQL block which accepts measurement in feet and displays it in cm, inch and meter.\n*/\n\nSET SERVEROUTPUT ON\nSET FEEDBACK OFF\nSET VERIFY OFF\n\nDECLARE\nFEET    NUMBER(10,2);\nINCH    NUMBER(10,2);\nCM      NUMBER(10,2);\nMETER   NUMBER(10,2);\n\nBEGIN\n\nFEET := &Enter_Measurement_in_Feet;\n\nINCH  := FEET * 12;\nCM    := FEET * 30.48;\nMETER := FEET * 0.3048;\n\nDBMS_OUTPUT.PUT_LINE('=========================================');\nDBMS_OUTPUT.PUT_LINE('         MEASUREMENT CONVERSION');\nDBMS_OUTPUT.PUT_LINE('=========================================');\nDBMS_OUTPUT.PUT_LINE('Feet        : '||FEET||' ft');\nDBMS_OUTPUT.PUT_LINE('            ');\nDBMS_OUTPUT.PUT_LINE('Inches      : '||INCH||' in');\nDBMS_OUTPUT.PUT_LINE('Centimeters : '||CM||' cm');\nDBMS_OUTPUT.PUT_LINE('Meters      : '||METER||' m');\nDBMS_OUTPUT.PUT_LINE('=========================================');\n\nEND;\n/\n\nSET SERVEROUTPUT OFF\nSET FEEDBACK ON\nSET VERIFY ON\n\n\nOutput:\n\ufffc \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n7. Write a PL/SQL block which converts temperature from Celsius to Fahrenheit.\n\n/*\nWrite a PL/SQL block which converts temperature from Celsius to Fahrenheit.\n*/\n\nSET SERVEROUTPUT ON\nSET FEEDBACK OFF\nSET VERIFY OFF\n\nDECLARE\nCELSIUS     NUMBER(10,2);\nFAHRENHEIT  NUMBER(10,2);\n\nBEGIN\n\nCELSIUS    := &Enter_Temperature_in_Celsius;\nFAHRENHEIT := (CELSIUS * 9/5) + 32;\n\nDBMS_OUTPUT.PUT_LINE('=========================================');\nDBMS_OUTPUT.PUT_LINE('          TEMPERATURE CONVERTER');\nDBMS_OUTPUT.PUT_LINE('=========================================');\nDBMS_OUTPUT.PUT_LINE('Celsius    : '||CELSIUS||'\u00b0C');\nDBMS_OUTPUT.PUT_LINE('           ');\nDBMS_OUTPUT.PUT_LINE('Fahrenheit : '||FAHRENHEIT||'\u00b0F');\nDBMS_OUTPUT.PUT_LINE('=========================================');\n\nEND;\n/\n\nSET SERVEROUTPUT OFF\nSET FEEDBACK ON\nSET VERIFY ON\n\n\n\n\n\n\n\n\n\n\n\n\nOutput: \n\n\ufffc\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n8. Write a PL/SQL block to delete the record of employee for given EID.\n\n/*\nWrite a PL/SQL block to delete the record of employee for given EID.\n*/\n\nSET SERVEROUTPUT ON\nSET FEEDBACK OFF\nSET VERIFY OFF\n\nDECLARE\nV_EID   EMP.EID%TYPE;\nV_COUNT NUMBER;\n\nBEGIN\n\nV_EID := &Enter_Employee_ID_to_Delete;\n\nSELECT COUNT(*) INTO V_COUNT\nFROM EMP\nWHERE EID = V_EID;\n\nIF V_COUNT = 0 THEN\nDBMS_OUTPUT.PUT_LINE('=========================================');\nDBMS_OUTPUT.PUT_LINE('Employee with EID '||V_EID||' does not exist!');\nDBMS_OUTPUT.PUT_LINE('=========================================');\nELSE\nDELETE FROM EMP WHERE EID = V_EID;\n\nDBMS_OUTPUT.PUT_LINE('=========================================');\nDBMS_OUTPUT.PUT_LINE('        EMPLOYEE DELETION STATUS');\nDBMS_OUTPUT.PUT_LINE('=========================================');\nDBMS_OUTPUT.PUT_LINE('Employee with EID '||V_EID||' deleted successfully!');\nDBMS_OUTPUT.PUT_LINE('Number of rows deleted: '||SQL%ROWCOUNT);\nDBMS_OUTPUT.PUT_LINE('=========================================');\n\nCOMMIT;\nEND IF;\n\nEXCEPTION\nWHEN OTHERS THEN\nDBMS_OUTPUT.PUT_LINE('Error: '||SQLERRM);\nROLLBACK;\n\nEND;\n/\n\nSET SERVEROUTPUT OFF\nSET FEEDBACK ON\nSET VERIFY ON\n\n\n\nOutput: \n\ufffc\n\n\n\n\n\n\n\n\n\n\n9. Write a PL/SQL block that calculates the simple interest based on given principal amount, \nrate of interest and number of years.\n\n/*\nWrite a PL/SQL block that calculates the simple interest\nbased on given principal amount, rate of interest and number of years.\n*/\n\nSET SERVEROUTPUT ON\nSET FEEDBACK OFF\nSET VERIFY OFF\n\nDECLARE\nPRINCIPAL       NUMBER(12,2);\nRATE            NUMBER(5,2);\nYEARS           NUMBER(5,2);\nSIMPLE_INTEREST NUMBER(12,2);\nTOTAL_AMOUNT    NUMBER(12,2);\n\nBEGIN\n\nPRINCIPAL := &Enter_Principal_Amount;\nRATE      := &Enter_Rate_of_Interest_Percentage;\nYEARS     := &Enter_Number_of_Years;\n\nSIMPLE_INTEREST := (PRINCIPAL * RATE * YEARS) / 100;\nTOTAL_AMOUNT    := PRINCIPAL + SIMPLE_INTEREST;\n\nDBMS_OUTPUT.PUT_LINE('=========================================');\nDBMS_OUTPUT.PUT_LINE('        SIMPLE INTEREST CALCULATOR');\nDBMS_OUTPUT.PUT_LINE('=========================================');\nDBMS_OUTPUT.PUT_LINE('Principal Amount : '||PRINCIPAL);\nDBMS_OUTPUT.PUT_LINE('Rate of Interest : '||RATE||'%');\nDBMS_OUTPUT.PUT_LINE('Time Period      : '||YEARS||' years');\nDBMS_OUTPUT.PUT_LINE('         ');\nDBMS_OUTPUT.PUT_LINE('Simple Interest  : '||SIMPLE_INTEREST);\nDBMS_OUTPUT.PUT_LINE('Total Amount     : '||TOTAL_AMOUNT);\nDBMS_OUTPUT.PUT_LINE('=========================================');\n\nEND;\n/\n\nSET SERVEROUTPUT OFF\nSET FEEDBACK ON\nSET VERIFY ON\n\nOutput: \ufffc\n\n\n\n\n\n\n\n\n\n\n\n10. Write a PL/SQL block to calculate the square and cube of the given number.\n\n/*\nWrite a PL/SQL block to calculate the square and cube of the given number.\n*/\n\nSET SERVEROUTPUT ON\nSET FEEDBACK OFF\nSET VERIFY OFF\n\nDECLARE\nNUM    NUMBER(10);\nSQUARE NUMBER(20);\nCUBE   NUMBER(30);\n\nBEGIN\n\nNUM := &Enter_a_Number;\n\nSQUARE := NUM * NUM;\nCUBE   := NUM * NUM * NUM;\n\nDBMS_OUTPUT.PUT_LINE('=========================================');\nDBMS_OUTPUT.PUT_LINE('       SQUARE AND CUBE CALCULATOR');\nDBMS_OUTPUT.PUT_LINE('=========================================');\nDBMS_OUTPUT.PUT_LINE('Number : '||NUM);\nDBMS_OUTPUT.PUT_LINE('        ');\nDBMS_OUTPUT.PUT_LINE('Square : '||SQUARE);\nDBMS_OUTPUT.PUT_LINE('Cube   : '||CUBE);\nDBMS_OUTPUT.PUT_LINE('=========================================');\n\nEND;\n/\n\nSET SERVEROUTPUT OFF\nSET FEEDBACK ON\nSET VERIFY ON\n\n\n\n\n\nOutput: \n\n\ufffc",
+    "10": "\ufffcFaculty of Computer Applications\ufffc\nMCA Sem-1 \n(AY-2026-27)\n\nLab Book\n\nSub Code: 05MC0108 \n(DBMS)\n\n\n \n\nSub.Faculty Name: Dr. Jaypalsinh A. Gohil\n\nIndex\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n1. Write a PL/SQL block that find: \n1. Area of Circle \n2. Area of Rectangle\n3. Circumference of Circle\n\n/* \nWrite a PL/SQL block that find \n1 . Area Of Circle \n2 . Area Of Rectangle \n3. Circumference of Circle\n*/\n\nSET SERVEROUTPUT ON\nSET FEEDBACK OFF\nSET VERIFY OFF\n\nDECLARE\nPI CONSTANT NUMBER(3,2) := 3.14;\nR NUMBER(5);\nCAREA NUMBER(7,2);\n\nL NUMBER(5);\nW NUMBER(5);\nRAREA NUMBER(7,2);\n\nCIR NUMBER(7,2);\n\nBEGIN\nR:=&R;\n\nL:=&L;\nW:=&W;\n\nDBMS_OUTPUT.PUT_LINE('1. Area of Circle');\nDBMS_OUTPUT.PUT_LINE('=================');\nCAREA:=PI*POWER(R,2);\nDBMS_OUTPUT.PUT_LINE('The Area of Circle is: '||CAREA);\nDBMS_OUTPUT.PUT_LINE('==============================');\nDBMS_OUTPUT.PUT_LINE('\n\nDBMS_OUTPUT.PUT_LINE('2. Area Of Rectangle');\nDBMS_OUTPUT.PUT_LINE('====================');\nRAREA:=(L*W);\nDBMS_OUTPUT.PUT_LINE('The Area of Rectangel is: '||RAREA);\nDBMS_OUTPUT.PUT_LINE('=================================');\nDBMS_OUTPUT.PUT_LINE('\n\nDBMS_OUTPUT.PUT_LINE('3. Circumference of Circle');\nDBMS_OUTPUT.PUT_LINE('==========================');\nCIR:= (2*PI*R);\nDBMS_OUTPUT.PUT_LINE('The Circumference of Circle is: '||CIR);\nDBMS_OUTPUT.PUT_LINE('=====================================');\nEND;\n/\n\nSET SERVEROUTPUT OFF\nSET FEEDBACK ON\nSET VERIFY ON\n\nOutput: \n\ufffc\n\n2. Write a PL/SQL block to accept product name, qty and price from user and then calculate discount in Rs. based on the given (%).\n\n/*\nWrite a PL/SQL block to accept product name, qty and price\nfrom user and then calculate discount in Rs. based on the given (%).\n*/\n\nSET SERVEROUTPUT ON\nSET FEEDBACK OFF\nSET VERIFY OFF\n\nDECLARE\nPNAME           VARCHAR2(30);\nQTY             NUMBER(5);\nPRICE           NUMBER(10,2);\nDISCOUNT_PCT    NUMBER(5,2);\nTOTAL_AMT       NUMBER(10,2);\nDISCOUNT_AMT    NUMBER(10,2);\nNET_AMT         NUMBER(10,2);\n\nBEGIN\n\nPNAME := '&Product_Name';\nQTY := &Quantity;\nPRICE := &Price;\nDISCOUNT_PCT := &Discount_Percentage;\n\nTOTAL_AMT := QTY * PRICE;\n\nDISCOUNT_AMT := (TOTAL_AMT * DISCOUNT_PCT) / 100;\nNET_AMT := TOTAL_AMT - DISCOUNT_AMT;\n\nDBMS_OUTPUT.PUT_LINE('=========================================');\nDBMS_OUTPUT.PUT_LINE('          PRODUCT BILL DETAILS');\nDBMS_OUTPUT.PUT_LINE('=========================================');\nDBMS_OUTPUT.PUT_LINE('Product Name    : ' || PNAME);\nDBMS_OUTPUT.PUT_LINE('Quantity        : ' || QTY);\nDBMS_OUTPUT.PUT_LINE('Price per unit  : ' || PRICE);\nDBMS_OUTPUT.PUT_LINE('Discount (%)    : ' || DISCOUNT_PCT || '%');\nDBMS_OUTPUT.PUT_LINE('                ');\nDBMS_OUTPUT.PUT_LINE('Total Amount    : ' || TOTAL_AMT);\nDBMS_OUTPUT.PUT_LINE('Discount Amount : ' || DISCOUNT_AMT);\nDBMS_OUTPUT.PUT_LINE('Net Amount      : ' || NET_AMT);\nDBMS_OUTPUT.PUT_LINE('=========================================');\n\nEND;\n/\n\nSET SERVEROUTPUT OFF\nSET FEEDBACK ON\nSET VERIFY ON\n\nOutput: \n\n\ufffc\n\n\n\n\n3. Write a PL/SQL block which displays gross salary of employees as per user input EID. (Consider EMP table with EID, EName, Deptno, Deptname Gender, Age, BasicSal) with appropriate data types.) Gross_Salary: BASICSAL + (DA + HRA + Medical) -- PF. Rules: HRA = 15% of basic, DA = 50% of basic, Medical = Rs. 500, PF = 10% of basic.\n\n/*\nWrite a PL/SQL block which displays gross salary of employees as per user input EID.\n\nGross Salary = BASIC SAL + DA + HRA + Medical - PF\n\nRules:\nHRA     = 15% of Basic Salary\nDA      = 50% of Basic Salary\nMedical = Rs. 500\nPF      = 10% of Basic Salary\n*/\n\nSET SERVEROUTPUT ON\nSET FEEDBACK OFF\nSET VERIFY OFF\n\nDECLARE\nV_EID       EMP.EID%TYPE;\nV_ENAME     EMP.ENAME%TYPE;\nV_DEPTNO    EMP.DEPTNO%TYPE;\nV_DEPTNAME  EMP.DEPTNAME%TYPE;\nV_GENDER    EMP.GENDER%TYPE;\nV_AGE       EMP.AGE%TYPE;\nV_BASICSAL  EMP.BASICSAL%TYPE;\n\nV_HRA       NUMBER(10,2);\nV_DA        NUMBER(10,2);\nV_MEDICAL   CONSTANT NUMBER(10,2) := 500;\nV_PF        NUMBER(10,2);\nV_GROSS_SAL NUMBER(10,2);\n\nBEGIN\n\nV_EID := &Enter_Employee_ID;\n\nSELECT EID, ENAME, DEPTNO, DEPTNAME, GENDER, AGE, BASICSAL\nINTO V_EID, V_ENAME, V_DEPTNO, V_DEPTNAME, V_GENDER, V_AGE, V_BASICSAL\nFROM EMP\nWHERE EID = V_EID;\n\nV_HRA := V_BASICSAL * 15 / 100;\nV_DA := V_BASICSAL * 50 / 100;\nV_PF := V_BASICSAL * 10 / 100;\n\nV_GROSS_SAL := V_BASICSAL + V_HRA + V_DA + V_MEDICAL - V_PF;\n\nDBMS_OUTPUT.PUT_LINE('=========================================');\nDBMS_OUTPUT.PUT_LINE('        EMPLOYEE SALARY DETAILS');\nDBMS_OUTPUT.PUT_LINE('=========================================');\nDBMS_OUTPUT.PUT_LINE('Employee ID : ' || V_EID);\nDBMS_OUTPUT.PUT_LINE('Name        : ' || V_ENAME);\nDBMS_OUTPUT.PUT_LINE('Department No : ' || V_DEPTNO);\nDBMS_OUTPUT.PUT_LINE('Department Name : ' || V_DEPTNAME);\nDBMS_OUTPUT.PUT_LINE('Gender      : ' || V_GENDER);\nDBMS_OUTPUT.PUT_LINE('Age         : ' || V_AGE);\nDBMS_OUTPUT.PUT_LINE('-----------------------------------------');\nDBMS_OUTPUT.PUT_LINE('Basic Salary : ' || V_BASICSAL);\nDBMS_OUTPUT.PUT_LINE('HRA (15%)    : ' || V_HRA);\nDBMS_OUTPUT.PUT_LINE('DA (50%)     : ' || V_DA);\nDBMS_OUTPUT.PUT_LINE('Medical      : ' || V_MEDICAL);\nDBMS_OUTPUT.PUT_LINE('PF (10%)     : ' || V_PF);\nDBMS_OUTPUT.PUT_LINE('-----------------------------------------');\nDBMS_OUTPUT.PUT_LINE('Gross Salary : ' || V_GROSS_SAL);\nDBMS_OUTPUT.PUT_LINE('=========================================');\n\nEXCEPTION\nWHEN NO_DATA_FOUND THEN\nDBMS_OUTPUT.PUT_LINE('Employee with EID ' || V_EID || ' not found!');\nWHEN OTHERS THEN\nDBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);\n\nEND;\n/\n\nSET SERVEROUTPUT OFF\nSET FEEDBACK ON\nSET VERIFY ON\n\nOutput: \n\ufffc\n\n\n\n\n\n\n\n\n\n\n4. Write a PL/SQL block which accepts measurement in feet and displays it in cm, inch and meter.\n\n/*\nWrite a PL/SQL block which accepts measurement in feet and displays it in cm, inch and meter.\n*/\n\nSET SERVEROUTPUT ON\nSET FEEDBACK OFF\nSET VERIFY OFF\n\nDECLARE\nFEET    NUMBER(10,2);\nINCH    NUMBER(10,2);\nCM      NUMBER(10,2);\nMETER   NUMBER(10,2);\n\nBEGIN\n\nFEET := &Enter_Measurement_in_Feet;\n\nINCH  := FEET * 12;\nCM    := FEET * 30.48;\nMETER := FEET * 0.3048;\n\nDBMS_OUTPUT.PUT_LINE('=========================================');\nDBMS_OUTPUT.PUT_LINE('         MEASUREMENT CONVERSION');\nDBMS_OUTPUT.PUT_LINE('=========================================');\nDBMS_OUTPUT.PUT_LINE('Feet        : '||FEET||' ft');\nDBMS_OUTPUT.PUT_LINE('            ');\nDBMS_OUTPUT.PUT_LINE('Inches      : '||INCH||' in');\nDBMS_OUTPUT.PUT_LINE('Centimeters : '||CM||' cm');\nDBMS_OUTPUT.PUT_LINE('Meters      : '||METER||' m');\nDBMS_OUTPUT.PUT_LINE('=========================================');\n\nEND;\n/\n\nSET SERVEROUTPUT OFF\nSET FEEDBACK ON\nSET VERIFY ON\n\n\n\nOutput: \n\ufffc\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n5. Write a PL/SQL block to calculate the square and cube of the given number.\n\n/*\nWrite a PL/SQL block to calculate the square and cube of the given number.\n*/\n\nSET SERVEROUTPUT ON\nSET FEEDBACK OFF\nSET VERIFY OFF\n\nDECLARE\nNUM    NUMBER(10);\nSQUARE NUMBER(20);\nCUBE   NUMBER(30);\n\nBEGIN\n\nNUM := &Enter_a_Number;\n\nSQUARE := NUM * NUM;\nCUBE   := NUM * NUM * NUM;\n\nDBMS_OUTPUT.PUT_LINE('=========================================');\nDBMS_OUTPUT.PUT_LINE('       SQUARE AND CUBE CALCULATOR');\nDBMS_OUTPUT.PUT_LINE('=========================================');\nDBMS_OUTPUT.PUT_LINE('Number : '||NUM);\nDBMS_OUTPUT.PUT_LINE('        ');\nDBMS_OUTPUT.PUT_LINE('Square : '||SQUARE);\nDBMS_OUTPUT.PUT_LINE('Cube   : '||CUBE);\nDBMS_OUTPUT.PUT_LINE('=========================================');\n\nEND;\n/\n\nSET SERVEROUTPUT OFF\nSET FEEDBACK ON\nSET VERIFY ON\n\n\n\n\n\n\n\nOutput: \n\n\ufffc\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n6. Write a PL/SQL block which accepts measurement in feet and displays it in cm, inch and meter.\n\n/*\nWrite a PL/SQL block which accepts measurement in feet and displays it in cm, inch and meter.\n*/\n\nSET SERVEROUTPUT ON\nSET FEEDBACK OFF\nSET VERIFY OFF\n\nDECLARE\nFEET    NUMBER(10,2);\nINCH    NUMBER(10,2);\nCM      NUMBER(10,2);\nMETER   NUMBER(10,2);\n\nBEGIN\n\nFEET := &Enter_Measurement_in_Feet;\n\nINCH  := FEET * 12;\nCM    := FEET * 30.48;\nMETER := FEET * 0.3048;\n\nDBMS_OUTPUT.PUT_LINE('=========================================');\nDBMS_OUTPUT.PUT_LINE('         MEASUREMENT CONVERSION');\nDBMS_OUTPUT.PUT_LINE('=========================================');\nDBMS_OUTPUT.PUT_LINE('Feet        : '||FEET||' ft');\nDBMS_OUTPUT.PUT_LINE('            ');\nDBMS_OUTPUT.PUT_LINE('Inches      : '||INCH||' in');\nDBMS_OUTPUT.PUT_LINE('Centimeters : '||CM||' cm');\nDBMS_OUTPUT.PUT_LINE('Meters      : '||METER||' m');\nDBMS_OUTPUT.PUT_LINE('=========================================');\n\nEND;\n/\n\nSET SERVEROUTPUT OFF\nSET FEEDBACK ON\nSET VERIFY ON\n\n\nOutput:\n\ufffc \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n7. Write a PL/SQL block which converts temperature from Celsius to Fahrenheit.\n\n/*\nWrite a PL/SQL block which converts temperature from Celsius to Fahrenheit.\n*/\n\nSET SERVEROUTPUT ON\nSET FEEDBACK OFF\nSET VERIFY OFF\n\nDECLARE\nCELSIUS     NUMBER(10,2);\nFAHRENHEIT  NUMBER(10,2);\n\nBEGIN\n\nCELSIUS    := &Enter_Temperature_in_Celsius;\nFAHRENHEIT := (CELSIUS * 9/5) + 32;\n\nDBMS_OUTPUT.PUT_LINE('=========================================');\nDBMS_OUTPUT.PUT_LINE('          TEMPERATURE CONVERTER');\nDBMS_OUTPUT.PUT_LINE('=========================================');\nDBMS_OUTPUT.PUT_LINE('Celsius    : '||CELSIUS||'\u00b0C');\nDBMS_OUTPUT.PUT_LINE('           ');\nDBMS_OUTPUT.PUT_LINE('Fahrenheit : '||FAHRENHEIT||'\u00b0F');\nDBMS_OUTPUT.PUT_LINE('=========================================');\n\nEND;\n/\n\nSET SERVEROUTPUT OFF\nSET FEEDBACK ON\nSET VERIFY ON\n\n\n\n\n\n\n\n\n\n\n\n\nOutput: \n\n\ufffc\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n8. Write a PL/SQL block to delete the record of employee for given EID.\n\n/*\nWrite a PL/SQL block to delete the record of employee for given EID.\n*/\n\nSET SERVEROUTPUT ON\nSET FEEDBACK OFF\nSET VERIFY OFF\n\nDECLARE\nV_EID   EMP.EID%TYPE;\nV_COUNT NUMBER;\n\nBEGIN\n\nV_EID := &Enter_Employee_ID_to_Delete;\n\nSELECT COUNT(*) INTO V_COUNT\nFROM EMP\nWHERE EID = V_EID;\n\nIF V_COUNT = 0 THEN\nDBMS_OUTPUT.PUT_LINE('=========================================');\nDBMS_OUTPUT.PUT_LINE('Employee with EID '||V_EID||' does not exist!');\nDBMS_OUTPUT.PUT_LINE('=========================================');\nELSE\nDELETE FROM EMP WHERE EID = V_EID;\n\nDBMS_OUTPUT.PUT_LINE('=========================================');\nDBMS_OUTPUT.PUT_LINE('        EMPLOYEE DELETION STATUS');\nDBMS_OUTPUT.PUT_LINE('=========================================');\nDBMS_OUTPUT.PUT_LINE('Employee with EID '||V_EID||' deleted successfully!');\nDBMS_OUTPUT.PUT_LINE('Number of rows deleted: '||SQL%ROWCOUNT);\nDBMS_OUTPUT.PUT_LINE('=========================================');\n\nCOMMIT;\nEND IF;\n\nEXCEPTION\nWHEN OTHERS THEN\nDBMS_OUTPUT.PUT_LINE('Error: '||SQLERRM);\nROLLBACK;\n\nEND;\n/\n\nSET SERVEROUTPUT OFF\nSET FEEDBACK ON\nSET VERIFY ON\n\n\n\nOutput: \n\ufffc\n\n\n\n\n\n\n\n\n\n\n9. Write a PL/SQL block that calculates the simple interest based on given principal amount, \nrate of interest and number of years.\n\n/*\nWrite a PL/SQL block that calculates the simple interest\nbased on given principal amount, rate of interest and number of years.\n*/\n\nSET SERVEROUTPUT ON\nSET FEEDBACK OFF\nSET VERIFY OFF\n\nDECLARE\nPRINCIPAL       NUMBER(12,2);\nRATE            NUMBER(5,2);\nYEARS           NUMBER(5,2);\nSIMPLE_INTEREST NUMBER(12,2);\nTOTAL_AMOUNT    NUMBER(12,2);\n\nBEGIN\n\nPRINCIPAL := &Enter_Principal_Amount;\nRATE      := &Enter_Rate_of_Interest_Percentage;\nYEARS     := &Enter_Number_of_Years;\n\nSIMPLE_INTEREST := (PRINCIPAL * RATE * YEARS) / 100;\nTOTAL_AMOUNT    := PRINCIPAL + SIMPLE_INTEREST;\n\nDBMS_OUTPUT.PUT_LINE('=========================================');\nDBMS_OUTPUT.PUT_LINE('        SIMPLE INTEREST CALCULATOR');\nDBMS_OUTPUT.PUT_LINE('=========================================');\nDBMS_OUTPUT.PUT_LINE('Principal Amount : '||PRINCIPAL);\nDBMS_OUTPUT.PUT_LINE('Rate of Interest : '||RATE||'%');\nDBMS_OUTPUT.PUT_LINE('Time Period      : '||YEARS||' years');\nDBMS_OUTPUT.PUT_LINE('         ');\nDBMS_OUTPUT.PUT_LINE('Simple Interest  : '||SIMPLE_INTEREST);\nDBMS_OUTPUT.PUT_LINE('Total Amount     : '||TOTAL_AMOUNT);\nDBMS_OUTPUT.PUT_LINE('=========================================');\n\nEND;\n/\n\nSET SERVEROUTPUT OFF\nSET FEEDBACK ON\nSET VERIFY ON\n\nOutput: \ufffc\n\n\n\n\n\n\n\n\n\n\n\n10. Write a PL/SQL block to calculate the square and cube of the given number.\n\n/*\nWrite a PL/SQL block to calculate the square and cube of the given number.\n*/\n\nSET SERVEROUTPUT ON\nSET FEEDBACK OFF\nSET VERIFY OFF\n\nDECLARE\nNUM    NUMBER(10);\nSQUARE NUMBER(20);\nCUBE   NUMBER(30);\n\nBEGIN\n\nNUM := &Enter_a_Number;\n\nSQUARE := NUM * NUM;\nCUBE   := NUM * NUM * NUM;\n\nDBMS_OUTPUT.PUT_LINE('=========================================');\nDBMS_OUTPUT.PUT_LINE('       SQUARE AND CUBE CALCULATOR');\nDBMS_OUTPUT.PUT_LINE('=========================================');\nDBMS_OUTPUT.PUT_LINE('Number : '||NUM);\nDBMS_OUTPUT.PUT_LINE('        ');\nDBMS_OUTPUT.PUT_LINE('Square : '||SQUARE);\nDBMS_OUTPUT.PUT_LINE('Cube   : '||CUBE);\nDBMS_OUTPUT.PUT_LINE('=========================================');\n\nEND;\n/\n\nSET SERVEROUTPUT OFF\nSET FEEDBACK ON\nSET VERIFY ON\n\n\n\n\n\nOutput: \n\n\ufffc",
+    "20": "\ufffcFaculty of Computer Applications\ufffc\nMCA Sem-1 \n(AY-2026-27)\n\nLab Book\n\nSub Code: 05MC0108 \n(DBMS)\n\n\n \n\nSub.Faculty Name: Dr. Jaypalsinh A. Gohil\n\nIndex\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nffhdt\n\n\n1. Write a PL/SQL block that find: \n1. Area of Circle \n2. Area of Rectangle\n3. Circumference of Circle\n\n/* \nWrite a PL/SQL block that find \n1 . Area Of Circle \n2 . Area Of Rectangle \n3. Circumference of Circle\n*/\n\nSET SERVEROUTPUT ON\nSET FEEDBACK OFF\nSET VERIFY OFF\n\nDECLARE\nPI CONSTANT NUMBER(3,2) := 3.14;\nR NUMBER(5);\nCAREA NUMBER(7,2);\n\nL NUMBER(5);\nW NUMBER(5);\nRAREA NUMBER(7,2);\n\nCIR NUMBER(7,2);\n\nBEGIN\nR:=&R;\n\nL:=&L;\nW:=&W;\n\nDBMS_OUTPUT.PUT_LINE('1. Area of Circle');\nDBMS_OUTPUT.PUT_LINE('=================');\nCAREA:=PI*POWER(R,2);\nDBMS_OUTPUT.PUT_LINE('The Area of Circle is: '||CAREA);\nDBMS_OUTPUT.PUT_LINE('==============================');\nDBMS_OUTPUT.PUT_LINE('\n\nDBMS_OUTPUT.PUT_LINE('2. Area Of Rectangle');\nDBMS_OUTPUT.PUT_LINE('====================');\nRAREA:=(L*W);\nDBMS_OUTPUT.PUT_LINE('The Area of Rectangel is: '||RAREA);\nDBMS_OUTPUT.PUT_LINE('=================================');\nDBMS_OUTPUT.PUT_LINE('\n\nDBMS_OUTPUT.PUT_LINE('3. Circumference of Circle');\nDBMS_OUTPUT.PUT_LINE('==========================');\nCIR:= (2*PI*R);\nDBMS_OUTPUT.PUT_LINE('The Circumference of Circle is: '||CIR);\nDBMS_OUTPUT.PUT_LINE('=====================================');\nEND;\n/\n\nSET SERVEROUTPUT OFF\nSET FEEDBACK ON\nSET VERIFY ON\n\nOutput: \n\ufffc\n\n2. Write a PL/SQL block to accept product name, qty and price from user and then calculate discount in Rs. based on the given (%).\n\n/*\nWrite a PL/SQL block to accept product name, qty and price\nfrom user and then calculate discount in Rs. based on the given (%).\n*/\n\nSET SERVEROUTPUT ON\nSET FEEDBACK OFF\nSET VERIFY OFF\n\nDECLARE\nPNAME           VARCHAR2(30);\nQTY             NUMBER(5);\nPRICE           NUMBER(10,2);\nDISCOUNT_PCT    NUMBER(5,2);\nTOTAL_AMT       NUMBER(10,2);\nDISCOUNT_AMT    NUMBER(10,2);\nNET_AMT         NUMBER(10,2);\n\nBEGIN\n\nPNAME := '&Product_Name';\nQTY := &Quantity;\nPRICE := &Price;\nDISCOUNT_PCT := &Discount_Percentage;\n\nTOTAL_AMT := QTY * PRICE;\n\nDISCOUNT_AMT := (TOTAL_AMT * DISCOUNT_PCT) / 100;\nNET_AMT := TOTAL_AMT - DISCOUNT_AMT;\n\nDBMS_OUTPUT.PUT_LINE('=========================================');\nDBMS_OUTPUT.PUT_LINE('          PRODUCT BILL DETAILS');\nDBMS_OUTPUT.PUT_LINE('=========================================');\nDBMS_OUTPUT.PUT_LINE('Product Name    : ' || PNAME);\nDBMS_OUTPUT.PUT_LINE('Quantity        : ' || QTY);\nDBMS_OUTPUT.PUT_LINE('Price per unit  : ' || PRICE);\nDBMS_OUTPUT.PUT_LINE('Discount (%)    : ' || DISCOUNT_PCT || '%');\nDBMS_OUTPUT.PUT_LINE('                ');\nDBMS_OUTPUT.PUT_LINE('Total Amount    : ' || TOTAL_AMT);\nDBMS_OUTPUT.PUT_LINE('Discount Amount : ' || DISCOUNT_AMT);\nDBMS_OUTPUT.PUT_LINE('Net Amount      : ' || NET_AMT);\nDBMS_OUTPUT.PUT_LINE('=========================================');\n\nEND;\n/\n\nSET SERVEROUTPUT OFF\nSET FEEDBACK ON\nSET VERIFY ON\n\nOutput: \n\n\ufffc\n\n\n\n\n3. Write a PL/SQL block which displays gross salary of employees as per user input EID. (Consider EMP table with EID, EName, Deptno, Deptname Gender, Age, BasicSal) with appropriate data types.) Gross_Salary: BASICSAL + (DA + HRA + Medical) -- PF. Rules: HRA = 15% of basic, DA = 50% of basic, Medical = Rs. 500, PF = 10% of basic.\n\n/*\nWrite a PL/SQL block which displays gross salary of employees as per user input EID.\n\nGross Salary = BASIC SAL + DA + HRA + Medical - PF\n\nRules:\nHRA     = 15% of Basic Salary\nDA      = 50% of Basic Salary\nMedical = Rs. 500\nPF      = 10% of Basic Salary\n*/\n\nSET SERVEROUTPUT ON\nSET FEEDBACK OFF\nSET VERIFY OFF\n\nDECLARE\nV_EID       EMP.EID%TYPE;\nV_ENAME     EMP.ENAME%TYPE;\nV_DEPTNO    EMP.DEPTNO%TYPE;\nV_DEPTNAME  EMP.DEPTNAME%TYPE;\nV_GENDER    EMP.GENDER%TYPE;\nV_AGE       EMP.AGE%TYPE;\nV_BASICSAL  EMP.BASICSAL%TYPE;\n\nV_HRA       NUMBER(10,2);\nV_DA        NUMBER(10,2);\nV_MEDICAL   CONSTANT NUMBER(10,2) := 500;\nV_PF        NUMBER(10,2);\nV_GROSS_SAL NUMBER(10,2);\n\nBEGIN\n\nV_EID := &Enter_Employee_ID;\n\nSELECT EID, ENAME, DEPTNO, DEPTNAME, GENDER, AGE, BASICSAL\nINTO V_EID, V_ENAME, V_DEPTNO, V_DEPTNAME, V_GENDER, V_AGE, V_BASICSAL\nFROM EMP\nWHERE EID = V_EID;\n\nV_HRA := V_BASICSAL * 15 / 100;\nV_DA := V_BASICSAL * 50 / 100;\nV_PF := V_BASICSAL * 10 / 100;\n\nV_GROSS_SAL := V_BASICSAL + V_HRA + V_DA + V_MEDICAL - V_PF;\n\nDBMS_OUTPUT.PUT_LINE('=========================================');\nDBMS_OUTPUT.PUT_LINE('        EMPLOYEE SALARY DETAILS');\nDBMS_OUTPUT.PUT_LINE('=========================================');\nDBMS_OUTPUT.PUT_LINE('Employee ID : ' || V_EID);\nDBMS_OUTPUT.PUT_LINE('Name        : ' || V_ENAME);\nDBMS_OUTPUT.PUT_LINE('Department No : ' || V_DEPTNO);\nDBMS_OUTPUT.PUT_LINE('Department Name : ' || V_DEPTNAME);\nDBMS_OUTPUT.PUT_LINE('Gender      : ' || V_GENDER);\nDBMS_OUTPUT.PUT_LINE('Age         : ' || V_AGE);\nDBMS_OUTPUT.PUT_LINE('-----------------------------------------');\nDBMS_OUTPUT.PUT_LINE('Basic Salary : ' || V_BASICSAL);\nDBMS_OUTPUT.PUT_LINE('HRA (15%)    : ' || V_HRA);\nDBMS_OUTPUT.PUT_LINE('DA (50%)     : ' || V_DA);\nDBMS_OUTPUT.PUT_LINE('Medical      : ' || V_MEDICAL);\nDBMS_OUTPUT.PUT_LINE('PF (10%)     : ' || V_PF);\nDBMS_OUTPUT.PUT_LINE('-----------------------------------------');\nDBMS_OUTPUT.PUT_LINE('Gross Salary : ' || V_GROSS_SAL);\nDBMS_OUTPUT.PUT_LINE('=========================================');\n\nEXCEPTION\nWHEN NO_DATA_FOUND THEN\nDBMS_OUTPUT.PUT_LINE('Employee with EID ' || V_EID || ' not found!');\nWHEN OTHERS THEN\nDBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);\n\nEND;\n/\n\nSET SERVEROUTPUT OFF\nSET FEEDBACK ON\nSET VERIFY ON\n\nOutput: \n\ufffc\n\n\n\n\n\n\n\n\n\n\n4. Write a PL/SQL block which accepts measurement in feet and displays it in cm, inch and meter.\n\n/*\nWrite a PL/SQL block which accepts measurement in feet and displays it in cm, inch and meter.\n*/\n\nSET SERVEROUTPUT ON\nSET FEEDBACK OFF\nSET VERIFY OFF\n\nDECLARE\nFEET    NUMBER(10,2);\nINCH    NUMBER(10,2);\nCM      NUMBER(10,2);\nMETER   NUMBER(10,2);\n\nBEGIN\n\nFEET := &Enter_Measurement_in_Feet;\n\nINCH  := FEET * 12;\nCM    := FEET * 30.48;\nMETER := FEET * 0.3048;\n\nDBMS_OUTPUT.PUT_LINE('=========================================');\nDBMS_OUTPUT.PUT_LINE('         MEASUREMENT CONVERSION');\nDBMS_OUTPUT.PUT_LINE('=========================================');\nDBMS_OUTPUT.PUT_LINE('Feet        : '||FEET||' ft');\nDBMS_OUTPUT.PUT_LINE('            ');\nDBMS_OUTPUT.PUT_LINE('Inches      : '||INCH||' in');\nDBMS_OUTPUT.PUT_LINE('Centimeters : '||CM||' cm');\nDBMS_OUTPUT.PUT_LINE('Meters      : '||METER||' m');\nDBMS_OUTPUT.PUT_LINE('=========================================');\n\nEND;\n/\n\nSET SERVEROUTPUT OFF\nSET FEEDBACK ON\nSET VERIFY ON\n\n\n\nOutput: \n\ufffc\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n5. Write a PL/SQL block to calculate the square and cube of the given number.\n\n/*\nWrite a PL/SQL block to calculate the square and cube of the given number.\n*/\n\nSET SERVEROUTPUT ON\nSET FEEDBACK OFF\nSET VERIFY OFF\n\nDECLARE\nNUM    NUMBER(10);\nSQUARE NUMBER(20);\nCUBE   NUMBER(30);\n\nBEGIN\n\nNUM := &Enter_a_Number;\n\nSQUARE := NUM * NUM;\nCUBE   := NUM * NUM * NUM;\n\nDBMS_OUTPUT.PUT_LINE('=========================================');\nDBMS_OUTPUT.PUT_LINE('       SQUARE AND CUBE CALCULATOR');\nDBMS_OUTPUT.PUT_LINE('=========================================');\nDBMS_OUTPUT.PUT_LINE('Number : '||NUM);\nDBMS_OUTPUT.PUT_LINE('        ');\nDBMS_OUTPUT.PUT_LINE('Square : '||SQUARE);\nDBMS_OUTPUT.PUT_LINE('Cube   : '||CUBE);\nDBMS_OUTPUT.PUT_LINE('=========================================');\n\nEND;\n/\n\nSET SERVEROUTPUT OFF\nSET FEEDBACK ON\nSET VERIFY ON\n\n\n\n\n\n\n\nOutput: \n\n\ufffc\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n6. Write a PL/SQL block which accepts measurement in feet and displays it in cm, inch and meter.\n\n/*\nWrite a PL/SQL block which accepts measurement in feet and displays it in cm, inch and meter.\n*/\n\nSET SERVEROUTPUT ON\nSET FEEDBACK OFF\nSET VERIFY OFF\n\nDECLARE\nFEET    NUMBER(10,2);\nINCH    NUMBER(10,2);\nCM      NUMBER(10,2);\nMETER   NUMBER(10,2);\n\nBEGIN\n\nFEET := &Enter_Measurement_in_Feet;\n\nINCH  := FEET * 12;\nCM    := FEET * 30.48;\nMETER := FEET * 0.3048;\n\nDBMS_OUTPUT.PUT_LINE('=========================================');\nDBMS_OUTPUT.PUT_LINE('         MEASUREMENT CONVERSION');\nDBMS_OUTPUT.PUT_LINE('=========================================');\nDBMS_OUTPUT.PUT_LINE('Feet        : '||FEET||' ft');\nDBMS_OUTPUT.PUT_LINE('            ');\nDBMS_OUTPUT.PUT_LINE('Inches      : '||INCH||' in');\nDBMS_OUTPUT.PUT_LINE('Centimeters : '||CM||' cm');\nDBMS_OUTPUT.PUT_LINE('Meters      : '||METER||' m');\nDBMS_OUTPUT.PUT_LINE('=========================================');\n\nEND;\n/\n\nSET SERVEROUTPUT OFF\nSET FEEDBACK ON\nSET VERIFY ON\n\n\nOutput:\n\ufffc \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n7. Write a PL/SQL block which converts temperature from Celsius to Fahrenheit.\n\n/*\nWrite a PL/SQL block which converts temperature from Celsius to Fahrenheit.\n*/\n\nSET SERVEROUTPUT ON\nSET FEEDBACK OFF\nSET VERIFY OFF\n\nDECLARE\nCELSIUS     NUMBER(10,2);\nFAHRENHEIT  NUMBER(10,2);\n\nBEGIN\n\nCELSIUS    := &Enter_Temperature_in_Celsius;\nFAHRENHEIT := (CELSIUS * 9/5) + 32;\n\nDBMS_OUTPUT.PUT_LINE('=========================================');\nDBMS_OUTPUT.PUT_LINE('          TEMPERATURE CONVERTER');\nDBMS_OUTPUT.PUT_LINE('=========================================');\nDBMS_OUTPUT.PUT_LINE('Celsius    : '||CELSIUS||'\u00b0C');\nDBMS_OUTPUT.PUT_LINE('           ');\nDBMS_OUTPUT.PUT_LINE('Fahrenheit : '||FAHRENHEIT||'\u00b0F');\nDBMS_OUTPUT.PUT_LINE('=========================================');\n\nEND;\n/\n\nSET SERVEROUTPUT OFF\nSET FEEDBACK ON\nSET VERIFY ON\n\n\n\n\n\n\n\n\n\n\n\n\nOutput: \n\n\ufffc\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n8. Write a PL/SQL block to delete the record of employee for given EID.\n\n/*\nWrite a PL/SQL block to delete the record of employee for given EID.\n*/\n\nSET SERVEROUTPUT ON\nSET FEEDBACK OFF\nSET VERIFY OFF\n\nDECLARE\nV_EID   EMP.EID%TYPE;\nV_COUNT NUMBER;\n\nBEGIN\n\nV_EID := &Enter_Employee_ID_to_Delete;\n\nSELECT COUNT(*) INTO V_COUNT\nFROM EMP\nWHERE EID = V_EID;\n\nIF V_COUNT = 0 THEN\nDBMS_OUTPUT.PUT_LINE('=========================================');\nDBMS_OUTPUT.PUT_LINE('Employee with EID '||V_EID||' does not exist!');\nDBMS_OUTPUT.PUT_LINE('=========================================');\nELSE\nDELETE FROM EMP WHERE EID = V_EID;\n\nDBMS_OUTPUT.PUT_LINE('=========================================');\nDBMS_OUTPUT.PUT_LINE('        EMPLOYEE DELETION STATUS');\nDBMS_OUTPUT.PUT_LINE('=========================================');\nDBMS_OUTPUT.PUT_LINE('Employee with EID '||V_EID||' deleted successfully!');\nDBMS_OUTPUT.PUT_LINE('Number of rows deleted: '||SQL%ROWCOUNT);\nDBMS_OUTPUT.PUT_LINE('=========================================');\n\nCOMMIT;\nEND IF;\n\nEXCEPTION\nWHEN OTHERS THEN\nDBMS_OUTPUT.PUT_LINE('Error: '||SQLERRM);\nROLLBACK;\n\nEND;\n/\n\nSET SERVEROUTPUT OFF\nSET FEEDBACK ON\nSET VERIFY ON\n\n\n\nOutput: \n\ufffc\n\n\n\n\n\n\n\n\n\n\n9. Write a PL/SQL block that calculates the simple interest based on given principal amount, \nrate of interest and number of years.\n\n/*\nWrite a PL/SQL block that calculates the simple interest\nbased on given principal amount, rate of interest and number of years.\n*/\n\nSET SERVEROUTPUT ON\nSET FEEDBACK OFF\nSET VERIFY OFF\n\nDECLARE\nPRINCIPAL       NUMBER(12,2);\nRATE            NUMBER(5,2);\nYEARS           NUMBER(5,2);\nSIMPLE_INTEREST NUMBER(12,2);\nTOTAL_AMOUNT    NUMBER(12,2);\n\nBEGIN\n\nPRINCIPAL := &Enter_Principal_Amount;\nRATE      := &Enter_Rate_of_Interest_Percentage;\nYEARS     := &Enter_Number_of_Years;\n\nSIMPLE_INTEREST := (PRINCIPAL * RATE * YEARS) / 100;\nTOTAL_AMOUNT    := PRINCIPAL + SIMPLE_INTEREST;\n\nDBMS_OUTPUT.PUT_LINE('=========================================');\nDBMS_OUTPUT.PUT_LINE('        SIMPLE INTEREST CALCULATOR');\nDBMS_OUTPUT.PUT_LINE('=========================================');\nDBMS_OUTPUT.PUT_LINE('Principal Amount : '||PRINCIPAL);\nDBMS_OUTPUT.PUT_LINE('Rate of Interest : '||RATE||'%');\nDBMS_OUTPUT.PUT_LINE('Time Period      : '||YEARS||' years');\nDBMS_OUTPUT.PUT_LINE('         ');\nDBMS_OUTPUT.PUT_LINE('Simple Interest  : '||SIMPLE_INTEREST);\nDBMS_OUTPUT.PUT_LINE('Total Amount     : '||TOTAL_AMOUNT);\nDBMS_OUTPUT.PUT_LINE('=========================================');\n\nEND;\n/\n\nSET SERVEROUTPUT OFF\nSET FEEDBACK ON\nSET VERIFY ON\n\nOutput: \ufffc\n\n\n\n\n\n\n\n\n\n\n\n10. Write a PL/SQL block to calculate the square and cube of the given number.\n\n/*\nWrite a PL/SQL block to calculate the square and cube of the given number.\n*/\n\nSET SERVEROUTPUT ON\nSET FEEDBACK OFF\nSET VERIFY OFF\n\nDECLARE\nNUM    NUMBER(10);\nSQUARE NUMBER(20);\nCUBE   NUMBER(30);\n\nBEGIN\n\nNUM := &Enter_a_Number;\n\nSQUARE := NUM * NUM;\nCUBE   := NUM * NUM * NUM;\n\nDBMS_OUTPUT.PUT_LINE('=========================================');\nDBMS_OUTPUT.PUT_LINE('       SQUARE AND CUBE CALCULATOR');\nDBMS_OUTPUT.PUT_LINE('=========================================');\nDBMS_OUTPUT.PUT_LINE('Number : '||NUM);\nDBMS_OUTPUT.PUT_LINE('        ');\nDBMS_OUTPUT.PUT_LINE('Square : '||SQUARE);\nDBMS_OUTPUT.PUT_LINE('Cube   : '||CUBE);\nDBMS_OUTPUT.PUT_LINE('=========================================');\n\nEND;\n/\n\nSET SERVEROUTPUT OFF\nSET FEEDBACK ON\nSET VERIFY ON\n\n\n\n\n\nOutput: \n\n\ufffc"
+  },
+  "snapshotsFormatting": {
+    "0": [],
+    "10": [
+      [
+        0,
+        1,
+        {
+          "image": "3cb3dfc740004ec1aec72ef6f947e857",
+          "width": 178,
+          "height": 59
+        }
+      ],
+      [
+        1,
+        33,
+        {
+          "bold": true
+        }
+      ],
+      [
+        33,
+        34,
+        {
+          "image": "d2093eda649c4adaab0ff36544731187",
+          "width": 191,
+          "height": 45
+        }
+      ],
+      [
+        35,
+        45,
+        {
+          "bold": true
+        }
+      ],
+      [
+        46,
+        58,
+        {
+          "bold": true
+        }
+      ],
+      [
+        60,
+        68,
+        {
+          "bold": true
+        }
+      ],
+      [
+        70,
+        89,
+        {
+          "bold": true
+        }
+      ],
+      [
+        90,
+        96,
+        {
+          "bold": true
+        }
+      ],
+      [
+        99,
+        100,
+        {
+          "bold": true
+        }
+      ],
+      [
+        102,
+        143,
+        {
+          "bold": true
+        }
+      ],
+      [
+        145,
+        150,
+        {
+          "bold": true
+        }
+      ],
+      [
+        176,
+        211,
+        {
+          "bold": true
+        }
+      ],
+      [
+        1408,
+        1416,
+        {
+          "bold": true
+        }
+      ],
+      [
+        1417,
+        1418,
+        {
+          "image": "aa96ab3a0a5f4183854b2a24021a5421",
+          "width": 533,
+          "height": 457
+        }
+      ],
+      [
+        1420,
+        1550,
+        {
+          "bold": true
+        }
+      ],
+      [
+        2933,
+        2941,
+        {
+          "bold": true
+        }
+      ],
+      [
+        2943,
+        2944,
+        {
+          "image": "50b689d4dca94cb69e2bd8fbe659b2c8",
+          "width": 624,
+          "height": 402
+        }
+      ],
+      [
+        2949,
+        3280,
+        {
+          "bold": true
+        }
+      ],
+      [
+        5549,
+        5557,
+        {
+          "bold": true
+        }
+      ],
+      [
+        5558,
+        5559,
+        {
+          "image": "3c2c4fa273884af3b71319471c617ef8",
+          "width": 624,
+          "height": 605
+        }
+      ],
+      [
+        5570,
+        5666,
+        {
+          "bold": true
+        }
+      ],
+      [
+        6600,
+        6608,
+        {
+          "bold": true
+        }
+      ],
+      [
+        6609,
+        6610,
+        {
+          "image": "cac6cf58908441edb1d9ec8caab6089b",
+          "width": 350,
+          "height": 320
+        }
+      ],
+      [
+        6633,
+        6710,
+        {
+          "bold": true
+        }
+      ],
+      [
+        7479,
+        7487,
+        {
+          "bold": true
+        }
+      ],
+      [
+        7489,
+        7490,
+        {
+          "image": "84e1643c5d4c41e79e7221bcc3dd720f",
+          "width": 371,
+          "height": 340
+        }
+      ],
+      [
+        7509,
+        7605,
+        {
+          "bold": true
+        }
+      ],
+      [
+        8538,
+        8545,
+        {
+          "bold": true
+        }
+      ],
+      [
+        8546,
+        8547,
+        {
+          "image": "fa216631dd9e47eaa006c90f88ac89d7",
+          "width": 345,
+          "height": 301
+        }
+      ],
+      [
+        8547,
+        8548,
+        {
+          "bold": true
+        }
+      ],
+      [
+        8571,
+        8649,
+        {
+          "bold": true
+        }
+      ],
+      [
+        9415,
+        9423,
+        {
+          "bold": true
+        }
+      ],
+      [
+        9425,
+        9426,
+        {
+          "image": "d9f6e149afe74775ab5f97f77d3ffc67",
+          "width": 432,
+          "height": 317
+        }
+      ],
+      [
+        9451,
+        9522,
+        {
+          "bold": true
+        }
+      ],
+      [
+        10631,
+        10639,
+        {
+          "bold": true
+        }
+      ],
+      [
+        10640,
+        10641,
+        {
+          "image": "10c6b31176e440fe93b1a7ec20a9eaf3",
+          "width": 428,
+          "height": 379
+        }
+      ],
+      [
+        10652,
+        10745,
+        {
+          "bold": true
+        }
+      ],
+      [
+        10746,
+        10783,
+        {
+          "bold": true
+        }
+      ],
+      [
+        12016,
+        12024,
+        {
+          "bold": true
+        }
+      ],
+      [
+        12024,
+        12025,
+        {
+          "image": "37ba051dc1b64709bfc3e25d0d99a7dc",
+          "width": 568,
+          "height": 512
+        }
+      ],
+      [
+        12037,
+        12115,
+        {
+          "bold": true
+        }
+      ],
+      [
+        12882,
+        12890,
+        {
+          "bold": true
+        }
+      ],
+      [
+        12892,
+        12893,
+        {
+          "image": "92666bc3e84f4bad9e959c2c09c1e5dd",
+          "width": 384,
+          "height": 407
+        }
+      ]
+    ],
+    "20": [
+      [
+        0,
+        1,
+        {
+          "image": "3cb3dfc740004ec1aec72ef6f947e857",
+          "width": 178,
+          "height": 59
+        }
+      ],
+      [
+        1,
+        33,
+        {
+          "bold": true
+        }
+      ],
+      [
+        33,
+        34,
+        {
+          "image": "d2093eda649c4adaab0ff36544731187",
+          "width": 191,
+          "height": 45
+        }
+      ],
+      [
+        35,
+        45,
+        {
+          "bold": true
+        }
+      ],
+      [
+        46,
+        58,
+        {
+          "bold": true
+        }
+      ],
+      [
+        60,
+        68,
+        {
+          "bold": true
+        }
+      ],
+      [
+        70,
+        89,
+        {
+          "bold": true
+        }
+      ],
+      [
+        90,
+        96,
+        {
+          "bold": true
+        }
+      ],
+      [
+        99,
+        100,
+        {
+          "bold": true
+        }
+      ],
+      [
+        102,
+        143,
+        {
+          "bold": true
+        }
+      ],
+      [
+        145,
+        150,
+        {
+          "bold": true
+        }
+      ],
+      [
+        186,
+        221,
+        {
+          "bold": true
+        }
+      ],
+      [
+        1418,
+        1426,
+        {
+          "bold": true
+        }
+      ],
+      [
+        1427,
+        1428,
+        {
+          "image": "aa96ab3a0a5f4183854b2a24021a5421",
+          "width": 533,
+          "height": 457
+        }
+      ],
+      [
+        1430,
+        1560,
+        {
+          "bold": true
+        }
+      ],
+      [
+        2943,
+        2951,
+        {
+          "bold": true
+        }
+      ],
+      [
+        2953,
+        2954,
+        {
+          "image": "50b689d4dca94cb69e2bd8fbe659b2c8",
+          "width": 624,
+          "height": 402
+        }
+      ],
+      [
+        2959,
+        3290,
+        {
+          "bold": true
+        }
+      ],
+      [
+        5559,
+        5567,
+        {
+          "bold": true
+        }
+      ],
+      [
+        5568,
+        5569,
+        {
+          "image": "3c2c4fa273884af3b71319471c617ef8",
+          "width": 624,
+          "height": 605
+        }
+      ],
+      [
+        5580,
+        5676,
+        {
+          "bold": true
+        }
+      ],
+      [
+        6610,
+        6618,
+        {
+          "bold": true
+        }
+      ],
+      [
+        6619,
+        6620,
+        {
+          "image": "cac6cf58908441edb1d9ec8caab6089b",
+          "width": 350,
+          "height": 320
+        }
+      ],
+      [
+        6643,
+        6720,
+        {
+          "bold": true
+        }
+      ],
+      [
+        7489,
+        7497,
+        {
+          "bold": true
+        }
+      ],
+      [
+        7499,
+        7500,
+        {
+          "image": "84e1643c5d4c41e79e7221bcc3dd720f",
+          "width": 371,
+          "height": 340
+        }
+      ],
+      [
+        7519,
+        7615,
+        {
+          "bold": true
+        }
+      ],
+      [
+        8548,
+        8555,
+        {
+          "bold": true
+        }
+      ],
+      [
+        8556,
+        8557,
+        {
+          "image": "fa216631dd9e47eaa006c90f88ac89d7",
+          "width": 345,
+          "height": 301
+        }
+      ],
+      [
+        8557,
+        8558,
+        {
+          "bold": true
+        }
+      ],
+      [
+        8581,
+        8659,
+        {
+          "bold": true
+        }
+      ],
+      [
+        9425,
+        9433,
+        {
+          "bold": true
+        }
+      ],
+      [
+        9435,
+        9436,
+        {
+          "image": "d9f6e149afe74775ab5f97f77d3ffc67",
+          "width": 432,
+          "height": 317
+        }
+      ],
+      [
+        9461,
+        9532,
+        {
+          "bold": true
+        }
+      ],
+      [
+        10641,
+        10649,
+        {
+          "bold": true
+        }
+      ],
+      [
+        10650,
+        10651,
+        {
+          "image": "10c6b31176e440fe93b1a7ec20a9eaf3",
+          "width": 428,
+          "height": 379
+        }
+      ],
+      [
+        10662,
+        10755,
+        {
+          "bold": true
+        }
+      ],
+      [
+        10756,
+        10793,
+        {
+          "bold": true
+        }
+      ],
+      [
+        12026,
+        12034,
+        {
+          "bold": true
+        }
+      ],
+      [
+        12034,
+        12035,
+        {
+          "image": "37ba051dc1b64709bfc3e25d0d99a7dc",
+          "width": 568,
+          "height": 512
+        }
+      ],
+      [
+        12047,
+        12125,
+        {
+          "bold": true
+        }
+      ],
+      [
+        12892,
+        12900,
+        {
+          "bold": true
+        }
+      ],
+      [
+        12902,
+        12903,
+        {
+          "image": "92666bc3e84f4bad9e959c2c09c1e5dd",
+          "width": 384,
+          "height": 407
+        }
+      ]
+    ]
+  },
+  "formatting": [
+    [
+      0,
+      1,
+      {
+        "image": "3cb3dfc740004ec1aec72ef6f947e857",
+        "width": 178,
+        "height": 59
+      }
+    ],
+    [
+      1,
+      33,
+      {
+        "bold": true
+      }
+    ],
+    [
+      33,
+      34,
+      {
+        "image": "d2093eda649c4adaab0ff36544731187",
+        "width": 191,
+        "height": 45
+      }
+    ],
+    [
+      35,
+      45,
+      {
+        "bold": true
+      }
+    ],
+    [
+      46,
+      58,
+      {
+        "bold": true
+      }
+    ],
+    [
+      60,
+      68,
+      {
+        "bold": true
+      }
+    ],
+    [
+      70,
+      89,
+      {
+        "bold": true
+      }
+    ],
+    [
+      90,
+      96,
+      {
+        "bold": true
+      }
+    ],
+    [
+      99,
+      100,
+      {
+        "bold": true
+      }
+    ],
+    [
+      102,
+      143,
+      {
+        "bold": true
+      }
+    ],
+    [
+      145,
+      150,
+      {
+        "bold": true
+      }
+    ],
+    [
+      187,
+      222,
+      {
+        "bold": true
+      }
+    ],
+    [
+      612,
+      613,
+      {
+        "image": "35fae1e6562045229268ffdb7d7c834d",
+        "width": 600,
+        "height": 950
+      }
+    ],
+    [
+      1420,
+      1428,
+      {
+        "bold": true
+      }
+    ],
+    [
+      1429,
+      1430,
+      {
+        "image": "aa96ab3a0a5f4183854b2a24021a5421",
+        "width": 533,
+        "height": 457
+      }
+    ],
+    [
+      1432,
+      1562,
+      {
+        "bold": true
+      }
+    ],
+    [
+      2945,
+      2953,
+      {
+        "bold": true
+      }
+    ],
+    [
+      2955,
+      2956,
+      {
+        "image": "50b689d4dca94cb69e2bd8fbe659b2c8",
+        "width": 624,
+        "height": 402
+      }
+    ],
+    [
+      2961,
+      3292,
+      {
+        "bold": true
+      }
+    ],
+    [
+      5561,
+      5569,
+      {
+        "bold": true
+      }
+    ],
+    [
+      5570,
+      5571,
+      {
+        "image": "3c2c4fa273884af3b71319471c617ef8",
+        "width": 624,
+        "height": 605
+      }
+    ],
+    [
+      5582,
+      5678,
+      {
+        "bold": true
+      }
+    ],
+    [
+      6612,
+      6620,
+      {
+        "bold": true
+      }
+    ],
+    [
+      6621,
+      6622,
+      {
+        "image": "cac6cf58908441edb1d9ec8caab6089b",
+        "width": 350,
+        "height": 320
+      }
+    ],
+    [
+      6645,
+      6722,
+      {
+        "bold": true
+      }
+    ],
+    [
+      7491,
+      7499,
+      {
+        "bold": true
+      }
+    ],
+    [
+      7501,
+      7502,
+      {
+        "image": "84e1643c5d4c41e79e7221bcc3dd720f",
+        "width": 371,
+        "height": 340
+      }
+    ],
+    [
+      7521,
+      7617,
+      {
+        "bold": true
+      }
+    ],
+    [
+      8550,
+      8557,
+      {
+        "bold": true
+      }
+    ],
+    [
+      8558,
+      8559,
+      {
+        "image": "fa216631dd9e47eaa006c90f88ac89d7",
+        "width": 345,
+        "height": 301
+      }
+    ],
+    [
+      8559,
+      8560,
+      {
+        "bold": true
+      }
+    ],
+    [
+      8583,
+      8661,
+      {
+        "bold": true
+      }
+    ],
+    [
+      9427,
+      9435,
+      {
+        "bold": true
+      }
+    ],
+    [
+      9437,
+      9438,
+      {
+        "image": "d9f6e149afe74775ab5f97f77d3ffc67",
+        "width": 432,
+        "height": 317
+      }
+    ],
+    [
+      9463,
+      9534,
+      {
+        "bold": true
+      }
+    ],
+    [
+      10643,
+      10651,
+      {
+        "bold": true
+      }
+    ],
+    [
+      10652,
+      10653,
+      {
+        "image": "10c6b31176e440fe93b1a7ec20a9eaf3",
+        "width": 428,
+        "height": 379
+      }
+    ],
+    [
+      10664,
+      10757,
+      {
+        "bold": true
+      }
+    ],
+    [
+      10758,
+      10795,
+      {
+        "bold": true
+      }
+    ],
+    [
+      12028,
+      12036,
+      {
+        "bold": true
+      }
+    ],
+    [
+      12036,
+      12037,
+      {
+        "image": "37ba051dc1b64709bfc3e25d0d99a7dc",
+        "width": 568,
+        "height": 512
+      }
+    ],
+    [
+      12049,
+      12127,
+      {
+        "bold": true
+      }
+    ],
+    [
+      12894,
+      12902,
+      {
+        "bold": true
+      }
+    ],
+    [
+      12904,
+      12905,
+      {
+        "image": "92666bc3e84f4bad9e959c2c09c1e5dd",
+        "width": 384,
+        "height": 407
+      }
+    ]
+  ]
+}

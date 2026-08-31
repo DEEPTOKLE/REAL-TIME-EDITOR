@@ -18,7 +18,7 @@ from typing import Dict, Set, Any, Optional
 
 from aiohttp import web, WSMsgType
 
-from .document_manager import DocumentManager
+from .document_manager import DocumentManager, validate_document_id
 from .ot import Operation
 from .formatting import FormattingStore
 from .docx_bridge import docx_to_synapse, synapse_to_docx
@@ -120,7 +120,10 @@ class CollaborativeServer:
         if not doc_id:
             return web.json_response({"error": "Document ID required"}, status=400)
 
-        doc = self.doc_manager.get_or_create(doc_id)
+        try:
+            doc = self.doc_manager.get_or_create(doc_id)
+        except ValueError as err:
+            return web.json_response({"error": str(err)}, status=400)
         return web.json_response(
             {"document": doc.to_dict()},
             headers={"Access-Control-Allow-Origin": "*"},
@@ -151,6 +154,8 @@ class CollaborativeServer:
             )
         except KeyError:
             return web.json_response({"error": f"Document '{doc_id}' not found"}, status=404)
+        except ValueError as err:
+            return web.json_response({"error": str(err)}, status=400)
 
     async def handle_delete_document(self, request: web.Request) -> web.Response:
         """DELETE /api/documents/{doc_id} - Deletes a document from memory and disk."""
@@ -168,13 +173,18 @@ class CollaborativeServer:
             )
         except ValueError as err:
             return web.json_response({"error": str(err)}, status=400)
+        except KeyError:
+            return web.json_response({"error": f"Document '{doc_id}' not found"}, status=404)
 
     async def handle_export_document(self, request: web.Request) -> web.Response:
         """GET /api/documents/{doc_id}/export?format=markdown|text|docx - Export file download."""
         doc_id = request.match_info.get("doc_id", "").strip()
         export_format = request.query.get("format", "text").lower()
 
-        doc = self.doc_manager.get_or_create(doc_id)
+        try:
+            doc = self.doc_manager.get_or_create(doc_id)
+        except ValueError as err:
+            return web.json_response({"error": str(err)}, status=400)
         if export_format in ("markdown", "md"):
             content = doc.get_markdown()
             content_type = "text/markdown"
@@ -315,11 +325,14 @@ class CollaborativeServer:
                     "jpeg": "image/jpeg",
                     "gif":  "image/gif",
                     "webp": "image/webp",
+                    "bmp":  "image/bmp",
+                    "tif":  "image/tiff",
+                    "tiff": "image/tiff",
                 }.get(ext, "application/octet-stream")
 
             if content_type not in ALLOWED_EXTENSIONS:
                 return web.json_response(
-                    {"error": "Unsupported image type. Use PNG, JPG, GIF, or WebP."},
+                    {"error": "Unsupported image type. Use PNG, JPG, GIF, WebP, BMP, or TIFF."},
                     status=400,
                     headers={"Access-Control-Allow-Origin": "*"},
                 )
@@ -448,8 +461,19 @@ class CollaborativeServer:
 
                     # 1. Join Document
                     if msg_type == "join":
-                        doc_id = data.get("docId", "welcome").strip() or "welcome"
-                        user_id = data.get("userId", "")
+                        if ws in self.client_meta:
+                            await ws.send_str(json.dumps({"type": "error", "message": "A connection may join only one document"}))
+                            continue
+
+                        try:
+                            doc_id = validate_document_id(data.get("docId", "welcome") or "welcome")
+                        except ValueError as err:
+                            await ws.send_str(json.dumps({"type": "error", "message": str(err)}))
+                            continue
+                        user_id = (data.get("userId") or "").strip()
+                        if not user_id:
+                            await ws.send_str(json.dumps({"type": "error", "message": "User ID is required"}))
+                            continue
                         user_name = data.get("userName", "Anonymous")
                         color = data.get("color", "#4285F4")
 
@@ -498,14 +522,16 @@ class CollaborativeServer:
                     elif msg_type == "operation":
                         doc_id = data.get("docId")
                         client_version = data.get("version", 0)
-                        user_id = data.get("userId", "")
                         op_data = data.get("op", {})
+                        meta = self.client_meta.get(ws)
 
-                        if not doc_id:
+                        if not meta or doc_id != meta["docId"]:
+                            await ws.send_str(json.dumps({"type": "error", "message": "Operation is not authorized for this document"}))
                             continue
 
                         doc = self.doc_manager.get_or_create(doc_id)
                         op = Operation.from_dict(op_data)
+                        user_id = meta["userId"]
                         op.user_id = user_id
 
                         try:
@@ -539,10 +565,11 @@ class CollaborativeServer:
                     # 3. Cursor & Selection Presence
                     elif msg_type == "cursor":
                         doc_id = data.get("docId")
-                        user_id = data.get("userId")
                         cursor_pos = data.get("cursor", {})
+                        meta = self.client_meta.get(ws)
 
-                        if doc_id and user_id:
+                        if meta and doc_id == meta["docId"]:
+                            user_id = meta["userId"]
                             doc = self.doc_manager.get_or_create(doc_id)
                             doc.update_cursor(user_id, cursor_pos)
 
@@ -560,7 +587,8 @@ class CollaborativeServer:
                     # 4. Version History Request
                     elif msg_type == "get_history":
                         doc_id = data.get("docId")
-                        if doc_id:
+                        meta = self.client_meta.get(ws)
+                        if meta and doc_id == meta["docId"]:
                             doc = self.doc_manager.get_or_create(doc_id)
                             history_packet = {
                                 "type": "history_list",
@@ -575,10 +603,15 @@ class CollaborativeServer:
                     elif msg_type == "get_snapshot":
                         doc_id = data.get("docId")
                         target_version = data.get("version", 0)
-                        if doc_id:
+                        meta = self.client_meta.get(ws)
+                        if meta and doc_id == meta["docId"]:
                             doc = self.doc_manager.get_or_create(doc_id)
-                            content = doc.get_snapshot_at_version(target_version)
-                            formatting = doc.get_snapshot_formatting_at_version(target_version)
+                            try:
+                                content = doc.get_snapshot_at_version(target_version)
+                                formatting = doc.get_snapshot_formatting_at_version(target_version)
+                            except ValueError as err:
+                                await ws.send_str(json.dumps({"type": "error", "message": str(err)}))
+                                continue
                             await ws.send_str(
                                 json.dumps(
                                     {
@@ -595,10 +628,15 @@ class CollaborativeServer:
                     elif msg_type == "restore_version":
                         doc_id = data.get("docId")
                         target_version = data.get("version", 0)
-                        user_id = data.get("userId", "system")
-                        if doc_id:
+                        meta = self.client_meta.get(ws)
+                        if meta and doc_id == meta["docId"]:
+                            user_id = meta["userId"]
                             doc = self.doc_manager.get_or_create(doc_id)
-                            past_content = doc.get_snapshot_at_version(target_version)
+                            try:
+                                past_content = doc.get_snapshot_at_version(target_version)
+                            except ValueError as err:
+                                await ws.send_str(json.dumps({"type": "error", "message": str(err)}))
+                                continue
                             if past_content is not None:
                                 current_len = doc.length()
                                 if current_len > 0:
@@ -654,7 +692,8 @@ class CollaborativeServer:
                     elif msg_type == "rename_document":
                         doc_id = data.get("docId", "")
                         new_title = (data.get("title") or "").strip()
-                        if doc_id and new_title:
+                        meta = self.client_meta.get(ws)
+                        if meta and doc_id == meta["docId"] and new_title:
                             try:
                                 doc = self.doc_manager.rename_document(doc_id, new_title)
                                 await ws.send_str(json.dumps({
@@ -671,7 +710,8 @@ class CollaborativeServer:
 
                     elif msg_type == "delete_document":
                         doc_id = data.get("docId", "")
-                        if doc_id:
+                        meta = self.client_meta.get(ws)
+                        if meta and doc_id == meta["docId"]:
                             try:
                                 self.doc_manager.delete_document(doc_id)
                                 await ws.send_str(json.dumps({
