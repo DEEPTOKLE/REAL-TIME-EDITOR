@@ -12,8 +12,8 @@ A full-stack, real-time collaborative text editor built from scratch in Python a
 - **Document Management & Persistence**: Complete REST API (`GET`, `POST`, `PUT`, `DELETE /api/documents`) and interactive dashboard to create, open, rename, delete, and search documents with automatic disk persistence across restarts.
 - **Multi-Format Export**: One-click client and REST endpoint export to **Markdown (`.md`)**, **Plain Text (`.txt`)**, and **Document JSON (`.json`)**.
 - **Live Cursor & Presence Awareness**: Smoothly renders remote user carets, author name tags, and active text selection ranges with distinct user-chosen colors.
-- **Version History & Snapshot Time-Travel**: Automatic snapshotting every 10 operations, history inspection drawer, and one-click version rollback.
-- **Local Undo / Redo**: Operation inversion stack allowing each user to undo their own local text and formatting changes without discarding remote peer edits.
+- **Version History & Snapshot Time-Travel**: Automatic snapshotting every 10 operations, history inspection drawer, and one-click version rollback (client-side, stored in document JSON).
+- **Local Undo / Redo**: Operation inversion stack allowing each user to undo their own local text and formatting changes without discarding remote peer edits (using OT-aware selective undo).
 - **Self-Contained Single-Command Server**: Serves both static frontend assets, REST APIs, and WebSocket endpoints from a single Python `aiohttp` process on `http://localhost:8000`.
 
 ---
@@ -66,9 +66,6 @@ flowchart TD
     DocMgr -->|Auto-save / Reload| DiskStorage
     WSServer -->|Broadcast Transformed Ops & Cursors| WS1
     WSServer -->|Broadcast Transformed Ops & Cursors| WS2
-```
-
----
 
 ## 📚 REST API Specification
 
